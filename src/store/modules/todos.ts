@@ -1,19 +1,18 @@
 import { VuexModule, Module, getModule, Mutation, Action } from 'vuex-module-decorators'
 import store from '@/store'
-import { User, UserSubmit } from '@/models/User'
-import { loginUser } from '../api';
+import { Todo, TodosResponse } from '@/models/Todo'
 
 @Module({
     namespaced: true,
-    name: 'users',
+    name: 'todos',
     store,
     dynamic: true
 })
-class UsersModule extends VuexModule {
-    user: User | null = null
+class TodosModule extends VuexModule {
+    todos?: Todo[]
 
-    get username() {
-        return this.user ? `${this.user.firstname} ${this.user.lastname}` : null
+    get todos() {
+        return this.todos
     }
 
     @Mutation

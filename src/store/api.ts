@@ -1,21 +1,25 @@
 import axios from 'axios'
-import { User, UserSubmit, UserResponse } from '@/models/User';
+import { User, UserSubmit, UserResponse } from '@/models/User'
+import { TodosResponse } from '@/models/Todo'
 
-export const AuthApi = axios.create({
+export const Api = axios.create({
     baseURL: 'http://localhost:3010/api'
 })
 
 export function setJWT(jwt: string) {
-    AuthApi.defaults.headers.common['Authorization'] = `Token ${jwt}`
+    Api.defaults.headers.common['Authorization'] = `Token ${jwt}`
 }
 
 export function clearJWT() {
-    delete AuthApi.defaults.headers.common['Authorization']
+    delete Api.defaults.headers.common['Authorization']
 }
 
-export async function loginUser(credentials: UserSubmit): Promise<User> {
-    const response = await AuthApi.post('/login', {
-        credentials
-    })
+export async function loginUser(userSubmit: UserSubmit): Promise<User> {
+    const response = await Api.post('/login', userSubmit)
     return (response.data as UserResponse).user
+}
+
+export async function getUserTodos(user: User): Promise<TodosResponse> {
+    const response = await Api.get(`/todos?id=${user.id}`)
+    return response.data as TodosResponse
 }

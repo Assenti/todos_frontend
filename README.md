@@ -1,4 +1,4 @@
-# first
+# Todos web app frontend part on Vue.js using TypeScript
 
 ## Project setup
 ```

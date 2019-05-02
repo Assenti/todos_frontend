@@ -19,5 +19,13 @@
 </template>
 
 <script lang="ts">
+import { Vue, Component } from 'vue-property-decorator'
+import users from '@/store/modules/users'
 
+@Component
+export default class Navbar extends Vue {
+    get username() {
+        return users.username
+    }
+}
 </script>
