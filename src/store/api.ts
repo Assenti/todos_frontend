@@ -3,7 +3,7 @@ import { User, UserSubmit, UserResponse } from '@/models/User'
 import { TodosResponse } from '@/models/Todo'
 
 export const Api = axios.create({
-    baseURL: 'http://localhost:3010/api'
+    baseURL: 'http://localhost:3000/api'
 })
 
 export function setJWT(jwt: string) {
@@ -16,6 +16,7 @@ export function clearJWT() {
 
 export async function loginUser(userSubmit: UserSubmit): Promise<User> {
     const response = await Api.post('/login', userSubmit)
+    console.log(response)
     return (response.data as UserResponse).user
 }
 

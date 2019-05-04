@@ -9,20 +9,20 @@ import { Todo, TodosResponse } from '@/models/Todo'
     dynamic: true
 })
 class TodosModule extends VuexModule {
-    todos?: Todo[]
+    // todos: Todo[]
 
-    get todos() {
-        return this.todos
-    }
+    // get getTodos() {
+    //     return this.todos
+    // }
 
-    @Mutation
-    setUser(user: User) { this.user = user }
+    // @Mutation
+    // setUser(user: User) { this.user = user }
 
-    @Action({ commit: 'setUser' })
-    async login(userSubmit: UserSubmit) {
-        const user = await loginUser(userSubmit)
-        return user
-    }
+    // @Action({ commit: 'setUser' })
+    // async login(userSubmit: UserSubmit) {
+    //     const user = await loginUser(userSubmit)
+    //     return user
+    // }
 }
 
-export default getModule(UsersModule)
+// export default getModule(UsersModule)

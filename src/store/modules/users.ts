@@ -7,7 +7,7 @@ import { loginUser } from '../api';
     namespaced: true,
     name: 'users',
     store,
-    dynamic: true
+    dynamic: false
 })
 class UsersModule extends VuexModule {
     user: User | null = null
@@ -22,6 +22,7 @@ class UsersModule extends VuexModule {
     @Action({ commit: 'setUser' })
     async login(userSubmit: UserSubmit) {
         const user = await loginUser(userSubmit)
+        console.log(user)
         return user
     }
 }

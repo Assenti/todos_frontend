@@ -1,25 +1,27 @@
 <template>
-  <div class="home">
-    <v-layout class="home-layout" align-center justify-center>
-      <v-card width="400">
-        <v-card-title>
-          <v-layout align-center justify-space-around>
-            <v-btn small flat color="primary"
-              @click="current = 'Login'">
-              <v-icon small class="mr-1">exit_to_app</v-icon>
-              Sign in
-            </v-btn>
-            <v-btn small flat color="success darken-1"
-              @click="current = 'Register'">
-              <v-icon small class="mr-1">person_add</v-icon>
-              Sign up
-            </v-btn>
-          </v-layout>
-        </v-card-title>
-        <component :is="current"></component>
-      </v-card>
-    </v-layout>
-  </div>
+    <div class="home">
+        <v-layout class="home-layout" align-center justify-center>
+            <v-card width="400">
+                <v-tabs centered color="indigo lighten-2" dark icons-and-text>
+                    <v-tabs-slider color="deep-purple"></v-tabs-slider>
+                    <v-tab href="#signin">
+                        Sign in
+                        <v-icon>exit_to_app</v-icon>
+                    </v-tab>
+                    <v-tab href="#signup">
+                        Sign up
+                        <v-icon>person_add</v-icon>
+                    </v-tab>
+                    <v-tab-item value="signin">
+                      <login/>
+                    </v-tab-item>
+                     <v-tab-item value="signup">
+                      <register/>
+                    </v-tab-item>
+                </v-tabs>
+            </v-card>
+        </v-layout>
+    </div>
 </template>
 
 <script lang="ts">
@@ -33,7 +35,7 @@ import Register from '@/components/Register.vue'
   },
 })
 export default class Home extends Vue {
-  current: string = 'Login'
+  
 }
 </script>
 

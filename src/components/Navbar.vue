@@ -1,11 +1,14 @@
 <template>
     <div>
-        <v-toolbar app dense dark>
+        <v-toolbar app dense 
+            dark flat 
+            color="indigo lighten-2">
             <v-toolbar-title class="headline text-uppercase">
-                <span>Vue</span>
-                <span class="font-weight-light">WITH TS</span>
+                <span class="font-weight-bold green--text darken-1">Vue </span>
+                <span class="font-weight-light text-none">with </span>
+                <span class="font-weight-bold primary--text">TS</span>
             </v-toolbar-title>
-            <v-spacer></v-spacer>
+            <v-spacer/>
             <v-toolbar-items>
                 <v-btn flat small router to="/">
                     <v-icon small class="mr-1">home</v-icon>Home

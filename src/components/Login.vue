@@ -4,7 +4,7 @@
             <div class="text-xs-center headline primary--text">Sign in</div>
         </v-layout>
         <v-form>
-            <v-alert v-model="alert" :type="status" outline>
+            <v-alert v-model="alert" type="error" outline>
                 {{ message }}
             </v-alert>
             <v-text-field
@@ -32,7 +32,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import users from '@/store/modules/users';
+import users from '@/store/modules/users'
+import { Api } from '@/store/api'
 
 @Component
 export default class Login extends Vue {
@@ -40,13 +41,23 @@ export default class Login extends Vue {
     password: string = ''
     message: string = ''
     alert: boolean = false
-    status: string | undefined = undefined
 
-    login() {
-        users.login({
-            email: this.email,
-            password: this.password
-        })
+    async login() {
+        try {
+            const response = Api.post('/login', {
+                email: this.email,
+                password: this.password
+            })
+            console.log(response)
+        }
+        catch(e) {
+            console.log(e)
+        }
+        
+        // users.login({
+        //     email: this.email,
+        //     password: this.password
+        // })
     }
 }
 

@@ -13,7 +13,7 @@ export default new Router({
       name: 'home',
       component: Home,
       meta: {
-        title: 'Vue with TypeScript'
+        title: 'Todos App'
       }
     },
     {

@@ -1,10 +1,10 @@
 <template>
     <div class="pa-4">
         <v-layout class="mb-4" justify-center>
-            <div class="text-xs-center headline primary--text">Sign up</div>
+            <div class="text-xs-center headline green--text">Sign up</div>
         </v-layout>
         <v-form>
-            <v-alert v-model="alert" :type="status" outline>
+            <v-alert v-model="alert" type="error" outline>
                 {{ message }}
             </v-alert>
             <v-text-field 
@@ -13,13 +13,13 @@
                 :rules="[v => !!v || 'Firstname is required']"
                 label="Firstname"
                 required/>
-                <v-text-field outline
+                <v-text-field
                 prepend-inner-icon="person"
                 v-model="lastname"
                 :rules="[v => !!v || 'Lastname is required']"
                 label="Lastname"
                 required/>
-            <v-text-field outline
+            <v-text-field
                 prepend-inner-icon="person"
                 v-model="email"
                 :rules="[v => !!v || 'E-mail is required',
@@ -27,15 +27,19 @@
                 label="E-mail"
                 required/>
 
-            <v-text-field outline
+            <v-text-field
                 prepend-inner-icon="lock"
                 v-model="password"
                 :rules="[v => !!v || 'Password is required']"
                 label="Password"
                 required/>
             
-            <v-layout class="py-3" justify-center>
-                <v-btn flat color="primary" @click="register">Register</v-btn>
+            <v-layout class="py-3">
+                <v-spacer></v-spacer>
+                <v-btn flat color="green" @click="register">
+                    <v-icon small class="mr-1">person_add</v-icon>
+                    Register
+                </v-btn>
             </v-layout>
                 
         </v-form>
@@ -54,7 +58,6 @@ export default class Register extends Vue {
     password: string = ''
     message: string = ''
     alert: boolean = false
-    status: string | undefined = undefined
 
     register() {
         // users.register({
