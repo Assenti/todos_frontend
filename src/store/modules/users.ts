@@ -1,13 +1,13 @@
-import { VuexModule, Module, getModule, Mutation, Action } from 'vuex-module-decorators'
+import { VuexModule, Module, getModule, MutationAction } from 'vuex-module-decorators'
 import store from '@/store'
 import { User, UserSubmit } from '@/models/User'
-import { loginUser } from '../api';
+import { loginUser, setJWT } from '../api'
 
 @Module({
     namespaced: true,
     name: 'users',
     store,
-    dynamic: false
+    dynamic: true
 })
 class UsersModule extends VuexModule {
     user: User | null = null
@@ -16,14 +16,15 @@ class UsersModule extends VuexModule {
         return this.user ? `${this.user.firstname} ${this.user.lastname}` : null
     }
 
-    @Mutation
-    setUser(user: User) { this.user = user }
+    get isLoggedIn() {
+        return this.user
+    }
 
-    @Action({ commit: 'setUser' })
+    @MutationAction
     async login(userSubmit: UserSubmit) {
         const user = await loginUser(userSubmit)
-        console.log(user)
-        return user
+        localStorage.setItem('session', JSON.stringify(user))
+        return { user }
     }
 }
 

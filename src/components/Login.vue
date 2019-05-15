@@ -31,9 +31,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator'
 import users from '@/store/modules/users'
-import { Api } from '@/store/api'
+import { api, setJWT } from '@/store/api'
+import { User } from '@/models/User'
 
 @Component
 export default class Login extends Vue {
@@ -42,22 +43,19 @@ export default class Login extends Vue {
     message: string = ''
     alert: boolean = false
 
-    async login() {
-        try {
-            const response = Api.post('/login', {
-                email: this.email,
-                password: this.password
-            })
-            console.log(response)
-        }
-        catch(e) {
-            console.log(e)
-        }
-        
-        // users.login({
-        //     email: this.email,
-        //     password: this.password
-        // })
+    login() {
+        users.login({
+            email: this.email,
+            password: this.password,
+        })
+        .then(() => {
+            console.log('ok')
+        })
+        .catch((err) => {
+            console.log(err)
+            this.alert = true
+            this.message = 'Invalid login or password'
+        })
     }
 }
 

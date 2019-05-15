@@ -4,7 +4,7 @@ export interface User {
     lastname: string
     email: string
     password: string
-    age?: number
+    createdAt: string
     token: string
 }
 

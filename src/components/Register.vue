@@ -20,7 +20,7 @@
                 label="Lastname"
                 required/>
             <v-text-field
-                prepend-inner-icon="person"
+                prepend-inner-icon="email"
                 v-model="email"
                 :rules="[v => !!v || 'E-mail is required',
                         v => /.+@.+/.test(v) || 'E-mail must be valid']"
