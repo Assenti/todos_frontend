@@ -10,10 +10,11 @@
             </v-toolbar-title>
             <v-spacer/>
             <v-toolbar-items>
-                <!-- <v-btn flat small router to="/">
-                    <v-icon small class="mr-1">home</v-icon>Home
-                </v-btn> -->
-                <v-btn v-if="$store.getters.isLoggedIn"
+                <v-btn v-if="loggedIn"
+                    flat small @click="openAccount">
+                    <v-icon small class="mr-1">account_circle</v-icon>Account
+                </v-btn>
+                <v-btn v-if="loggedIn"
                     flat small @click="logout">
                     <v-icon small class="mr-1">exit_to_app</v-icon>Sign out
                 </v-btn>
@@ -25,14 +26,30 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import users from '@/store/modules/users'
+import { bus } from '@/main'
 
 @Component
 export default class Navbar extends Vue {
+    loggedIn: boolean = users.isLoggedIn
+    dialog: boolean = false
+
     get username() {
         return users.username
     }
 
+    created() {
+        bus.$on('loggedIn', () => {
+            this.loggedIn = true
+        })
+    }
+
     logout() {
+        users.logout()
+        bus.$emit('loggedOut')
+        this.loggedIn = false
+    }
+
+    openAccount() {
 
     }
 }

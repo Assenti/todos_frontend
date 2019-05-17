@@ -3,8 +3,8 @@
         <v-layout class="mb-4" justify-center>
             <div class="text-xs-center headline primary--text">Sign in</div>
         </v-layout>
-        <v-form>
-            <v-alert v-model="alert" type="error" outline>
+        <v-form @submit.prevent="login">
+            <v-alert v-model="alert" type="error" dismissible outline>
                 {{ message }}
             </v-alert>
             <v-text-field
@@ -23,7 +23,10 @@
                 required/>
 
             <v-layout class="py-3" justify-end>
-                <v-btn flat color="primary" @click="login">Login</v-btn>
+                <v-btn type="submit" 
+                    flat color="primary"
+                    :loading="loading" 
+                    @click="login">Login</v-btn>
             </v-layout>
                 
         </v-form>
@@ -32,6 +35,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { bus } from '@/main'
 import users from '@/store/modules/users'
 import { api, setJWT } from '@/store/api'
 import { User } from '@/models/User'
@@ -42,19 +46,29 @@ export default class Login extends Vue {
     password: string = ''
     message: string = ''
     alert: boolean = false
+    loading: boolean = false
 
     login() {
-        users.login({
+        this.loading = true
+
+        api.post('/login', {
             email: this.email,
-            password: this.password,
+            password: this.password
+        })
+        .then(response => {
+            users.login(response.data as User)
+            bus.$emit('loggedIn')
+        })
+        .catch(err => {
+            this.alert = true
+            this.message = 'Invalid Email or Password'
         })
         .then(() => {
-            console.log('ok')
-        })
-        .catch((err) => {
-            console.log(err)
-            this.alert = true
-            this.message = 'Invalid login or password'
+            this.loading = false
+            setTimeout(() => {
+                this.alert = false
+                this.message = ''
+            }, 3000)
         })
     }
 }
