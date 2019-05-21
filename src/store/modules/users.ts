@@ -12,6 +12,10 @@ import { User, UserSubmit } from '@/models/User'
 class UsersModule extends VuexModule {
     user: User | null = this.castToUser() || null
 
+    get userId() {
+        return this.user != null ? this.user.id : null
+    }
+
     get username() {
         return this.user ? `${this.user.firstname} ${this.user.lastname}` : null
     }
@@ -32,8 +36,9 @@ class UsersModule extends VuexModule {
         return {}
     }
 
-    castToUser(): User {
-        return JSON.parse(localStorage.getItem('user')) as User
+    castToUser(): User | null {
+        let user = localStorage.getItem('user')
+        return user != undefined ? JSON.parse(user) as User : null
     }
 }
 

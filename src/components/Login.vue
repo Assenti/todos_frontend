@@ -56,7 +56,7 @@ export default class Login extends Vue {
             password: this.password
         })
         .then(response => {
-            users.login(response.data as User)
+            users.login(response.data.user as User)
             bus.$emit('loggedIn')
         })
         .catch(err => {

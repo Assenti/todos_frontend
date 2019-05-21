@@ -9,11 +9,11 @@ import { Todo, TodosResponse } from '@/models/Todo'
     dynamic: true
 })
 class TodosModule extends VuexModule {
-    // todos: Todo[]
+    todos: Todo[] = []
 
-    // get getTodos() {
-    //     return this.todos
-    // }
+    get getTodos() {
+        return this.todos
+    }
 
     // @Mutation
     // setUser(user: User) { this.user = user }
@@ -25,4 +25,4 @@ class TodosModule extends VuexModule {
     // }
 }
 
-// export default getModule(UsersModule)
+export default getModule(TodosModule)
