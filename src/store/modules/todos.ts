@@ -1,4 +1,4 @@
-import { VuexModule, Module, getModule, Mutation, Action } from 'vuex-module-decorators'
+import { VuexModule, Module, getModule, MutationAction } from 'vuex-module-decorators'
 import store from '@/store'
 import { Todo, TodosResponse } from '@/models/Todo'
 
@@ -15,14 +15,10 @@ class TodosModule extends VuexModule {
         return this.todos
     }
 
-    // @Mutation
-    // setUser(user: User) { this.user = user }
-
-    // @Action({ commit: 'setUser' })
-    // async login(userSubmit: UserSubmit) {
-    //     const user = await loginUser(userSubmit)
-    //     return user
-    // }
+    @MutationAction
+    async setTodos(todos: Todo[]) {
+        return { todos }
+    }
 }
 
 export default getModule(TodosModule)

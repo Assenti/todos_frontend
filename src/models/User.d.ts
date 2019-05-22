@@ -1,10 +1,9 @@
 export interface User {
-    id: number
-    firstname: string
-    lastname: string
-    email: string
-    password: string
-    createdAt: string
+    ID: number
+    Firstname: string
+    Lastname: string
+    Email: string
+    CreatedAt: string
     // token: string
 }
 

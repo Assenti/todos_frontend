@@ -1,6 +1,6 @@
 import { VuexModule, Module, getModule, MutationAction } from 'vuex-module-decorators'
 import store from '@/store'
-import { User, UserSubmit } from '@/models/User'
+import { User } from '@/models/User'
 
 @Module({
     namespaced: true,
@@ -13,11 +13,11 @@ class UsersModule extends VuexModule {
     user: User | null = this.castToUser() || null
 
     get userId() {
-        return this.user != null ? this.user.id : null
+        return this.user ? this.user.ID : null
     }
 
     get username() {
-        return this.user ? `${this.user.firstname} ${this.user.lastname}` : null
+        return this.user ? `${this.user.Firstname} ${this.user.Lastname}` : null
     }
 
     get isLoggedIn() {

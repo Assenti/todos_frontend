@@ -6,9 +6,10 @@
         prepend-inner-icon="assignment"
         clearable
         append-icon="add_box"
-        @click:append="add"
-        @keyup.enter="add"
+        @click:append="addTodo"
+        @keyup.enter="addTodo"
         required
+        :loading="loader"
         label="Todo"
         hint="Type your todo and press 'Enter' or click '+' button"
         persistent-hint
@@ -38,7 +39,18 @@
           </v-list-tile>
           <v-divider :key="index" v-if="index < todo.length - 1" inset/>
         </template>
-      </v-list>  
+      </v-list>
+
+      <v-snackbar top right
+        v-model="snackbar"
+        :timeout="3000">
+        {{ notify }}
+        <v-btn color="pink"
+          flat @click="snackbar = false">
+          Close
+        </v-btn>
+      </v-snackbar>
+
     </v-layout>
 </template>
 
@@ -47,6 +59,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
 import { api, setJWT } from '@/store/api'
 import users from '@/store/modules/users'
+import todos from '@/store/modules/todos'
 
 @Component({
   components: {
@@ -54,25 +67,52 @@ import users from '@/store/modules/users'
   }
 })
 export default class Todos extends Vue {
-  todos: Todo[] = []
+  todos: Todo[] = todos.getTodos
   todo: string = ''
+  snackbar: boolean = false
+  notify: string = ''
+  loader: boolean = false
 
   mounted() {
-   this.getTodos() 
+    if(todos.getTodos.length == 0) this.getTodos() 
   }
 
   getTodos() {
+    this.loader = true
     api.get(`/usertodos?userid=${users.userId}`)
     .then(response => {
       this.todos = response.data.todos
+      todos.setTodos(response.data.todos as Todo[])
     })
     .catch(err => {
-
+      this.snackbar = true
+      this.notify = 'Error ocurred while downloading todos list'
     })
+    .then(() => this.loader = false)
   }
 
-  add() {
+  addTodo() {
+    this.loader = true
 
+    let data = {
+      Value: this.todo,
+      UserID: users.userId
+    }
+  
+    api.post('/todos', data)
+    .then(response => {
+      this.todos.push(response.data.todo)
+      todos.setTodos(this.todos as Todo[])
+    })
+    .catch(err => {
+      console.log(err)
+      this.snackbar = true
+      this.notify = 'Error ocurred while sending new todo'
+    })
+    .finally(() => {
+      this.loader = false
+      this.todo = ''
+    })
   }
 
   voidFunc() {}
