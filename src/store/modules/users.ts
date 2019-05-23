@@ -1,8 +1,6 @@
 import { VuexModule, Module, getModule, MutationAction } from 'vuex-module-decorators'
 import store from '@/store'
-import { api, setJWT } from '../api'
 import { User, UserSubmit } from '@/models/User'
-import { bus } from '@/main'
 
 @Module({
     namespaced: true,
@@ -36,37 +34,6 @@ class UsersModule extends VuexModule {
     async logout() {
         localStorage.removeItem('user')
         return {}
-    }
-
-    register(user: User) {
-        return new Promise(resolve => {
-            api.post('/users', user)
-            .then(response => {
-                console.log(response.data)
-                bus.$emit('notify', 'Congratulations! You are successfully registered!')
-                resolve()
-            })
-            .catch(err => {
-                console.log(err)
-                bus.$emit('notify', 'Error occured while registering')
-                resolve()
-            })
-        })
-    }
-
-    signin(user: UserSubmit) {
-        return new Promise(resolve => {
-            api.post('/login', user)
-            .then(response => {
-                this.login(response.data as User)
-                resolve()
-            })
-            .catch(err => {
-                console.log(err)
-                bus.$emit('notify', 'Invalid Email or Password')
-                resolve()
-            })
-        })
     }
 
     castToUser(): User | null {

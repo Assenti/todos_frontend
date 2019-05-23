@@ -1,20 +1,31 @@
 <template>
     <v-layout column>
       <div class="title text-xs-center py-2">Your todos...</div>
-      <v-text-field
-        v-model="todo"
-        prepend-inner-icon="assignment"
-        clearable
-        append-icon="add_box"
-        @click:append="addTodo"
-        @keyup.enter="addTodo"
-        required
-        :loading="loader"
-        label="Todo"
-        hint="Type your todo and press 'Enter' or click '+' button"
-        persistent-hint
-        :rules="[v => !!v || 'Todo must be provided']"
-        />
+      
+      <v-layout align-center>
+        <v-text-field
+          v-model="todo"
+          prepend-inner-icon="assignment"
+          clearable
+          append-icon="add_box"
+          @click:append="addTodo"
+          @keyup.enter="addTodo"
+          required
+          :loading="loader"
+          label="Todo"
+          hint="Type your todo and press 'Enter' or click '+' button"
+          persistent-hint
+          :rules="[v => !!v || 'Todo must be provided']"
+          />
+        <v-btn flat
+          icon 
+          title="Refresh todos"
+          color="primary"
+          class="ml-3"
+          @click="getTodos">
+          <v-icon medium>refresh</v-icon>
+        </v-btn>
+      </v-layout>
 
       <v-list two-line dense>
         <template v-for="(todo, index) in todos">
@@ -23,21 +34,33 @@
             avatar
             @click="voidFunc">
             <v-list-tile-avatar>
-              <v-icon>flag</v-icon>
+              <v-btn flat
+                icon
+                :loading="loader"
+                title="Importance Indicator"
+                :color="todo.Important == 1 ? 'red' : ''"
+                @click="toggleImportance(todo, index)">
+                <v-icon>flag</v-icon>
+              </v-btn>
             </v-list-tile-avatar>
 
             <v-list-tile-content>
               <v-list-tile-title>{{ todo.Value }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ todo.CreatedAt }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title class="caption">
+                {{ new Date(todo.CreatedAt).toLocaleDateString() }}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
 
             <v-list-tile-action>
-              <v-btn icon ripple>
-                <v-icon small color="grey lighten-1">delete</v-icon>
+              <v-btn icon
+                flat
+                @click="deleteTodo(todo)"
+                ripple>
+                <v-icon small>delete</v-icon>
               </v-btn>
             </v-list-tile-action>
           </v-list-tile>
-          <v-divider :key="index" v-if="index < todo.length - 1" inset/>
+          <v-divider :key="index" v-if="index < todos.length - 1"/>
         </template>
       </v-list>
 
@@ -57,9 +80,11 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
-import { api, setJWT } from '@/store/api'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
+import BackendService from '@/services/backendService'
+import { bus } from '@/main'
+const backendService = new BackendService()
 
 @Component({
   components: {
@@ -73,46 +98,61 @@ export default class Todos extends Vue {
   notify: string = ''
   loader: boolean = false
 
+  created() {
+    bus.$on('toast', (message: string) => {
+      this.snackbar = true
+      this.notify = message
+    })
+  }
+  
   mounted() {
-    if(todos.getTodos.length == 0) this.getTodos() 
+    if(todos.getTodos.length == 0 && !this.isTodosBelongToUser()) this.getTodos() 
   }
 
   getTodos() {
     this.loader = true
-    api.get(`/usertodos?userid=${users.userId}`)
-    .then(response => {
-      this.todos = response.data.todos
-      todos.setTodos(response.data.todos as Todo[])
+    backendService
+    .fetchTodosList()
+    .then((todos) => {
+      this.todos = todos
+      this.loader = false
     })
-    .catch(err => {
-      this.snackbar = true
-      this.notify = 'Error ocurred while downloading todos list'
-    })
-    .then(() => this.loader = false)
   }
 
   addTodo() {
     this.loader = true
-
-    let data = {
-      Value: this.todo,
-      UserID: users.userId
-    }
-  
-    api.post('/todos', data)
-    .then(response => {
-      this.todos.push(response.data.todo)
-      todos.setTodos(this.todos as Todo[])
-    })
-    .catch(err => {
-      console.log(err)
-      this.snackbar = true
-      this.notify = 'Error ocurred while sending new todo'
-    })
-    .finally(() => {
+    backendService
+    .addTodo(this.todo)
+    .then(todo => {
       this.loader = false
       this.todo = ''
+      this.todos.push(todo)
+      todos.setTodos(this.todos as Todo[])
     })
+  }
+
+  toggleImportance(todo: Todo, index: number) {
+    this.loader = true
+    backendService
+    .toggleImportance(todo)
+    .then(todo => {
+      this.todos[index].Important = todo.Important
+      this.loader = false
+      todos.setTodos(this.todos as Todo[])
+    })
+  }
+
+  deleteTodo(todo: Todo) {
+
+  }
+
+  isTodosBelongToUser(): boolean | undefined {
+    if(todos.getTodos.length > 0) {
+      users.userId == todos.getTodos[0].UserID
+    }
+    else {
+      return false
+    }
   }
 
   voidFunc() {}

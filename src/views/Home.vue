@@ -32,6 +32,7 @@ export default class Home extends Vue {
 
   created() {
       bus.$on('loggedOut', () => this.loggedIn = false)
+      bus.$on('loggedIn', () => this.loggedIn = true)
   }
 }
 </script>

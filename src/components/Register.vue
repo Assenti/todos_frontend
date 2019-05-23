@@ -79,6 +79,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import users from '@/store/modules/users'
+import BackendService from '@/services/backendService'
+const backendService = new BackendService()
 import { User } from '../models/User'
 import { bus } from '@/main'
 
@@ -100,7 +102,7 @@ export default class Register extends Vue {
             setTimeout(() => {
                 this.alert = false
                 this.message = ''
-            })
+            }, 3000)
         })
     }
 
@@ -147,7 +149,8 @@ export default class Register extends Vue {
             Password: this.password
         }
 
-        users.register(newUser as User)
+        backendService
+        .register(newUser as User)
         .then(() => this.loading = false)  
         .catch(err => console.log(err))
     }

@@ -44,6 +44,8 @@ import { Component, Vue } from 'vue-property-decorator'
 import { bus } from '@/main'
 import users from '@/store/modules/users'
 import { User } from '@/models/User'
+import BackendService from '@/services/backendService'
+const backendService = new BackendService()
 
 @Component
 export default class Login extends Vue {
@@ -71,7 +73,7 @@ export default class Login extends Vue {
         }
         this.loading = true
         
-        users
+        backendService
         .signin(data)
         .then(() => this.loading = false)
     }
