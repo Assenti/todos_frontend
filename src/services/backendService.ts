@@ -88,6 +88,21 @@ class BackendService {
             })
         })
     }
+
+    deleteTodo(todo: Todo) {
+        return new Promise(resolve => {
+            api.delete(`/todos?id=${todo.ID}`)
+            .then(response => {
+                console.log(response.data)
+                resolve('success')
+            })
+            .catch(err => {
+                console.log(err)
+                resolve()
+                bus.$emit('toast', 'Error ocurred while deleting todo')
+            })
+        })
+    }
 }
 
 export default BackendService

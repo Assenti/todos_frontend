@@ -54,7 +54,7 @@
             <v-list-tile-action>
               <v-btn icon
                 flat
-                @click="deleteTodo(todo)"
+                @click="deleteTodo(todo, index)"
                 ripple>
                 <v-icon small>delete</v-icon>
               </v-btn>
@@ -142,8 +142,17 @@ export default class Todos extends Vue {
     })
   }
 
-  deleteTodo(todo: Todo) {
-
+  deleteTodo(todo: Todo, index: number) {
+    this.loader = true
+    backendService
+    .deleteTodo(todo)
+    .then(() => {
+      let id = this.todos[index].ID
+      this.todos = this.todos.filter(todo => {
+        return todo.ID != id
+      })
+      this.loader = false
+    })
   }
 
   isTodosBelongToUser(): boolean | undefined {
