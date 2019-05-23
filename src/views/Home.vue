@@ -20,6 +20,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import Auth from '@/components/Auth.vue'
 import Todos from '@/components/Todos.vue'
 import users from '@/store/modules/users'
+import { bus } from '@/main'
 
 @Component({
   components: {
@@ -28,6 +29,10 @@ import users from '@/store/modules/users'
 })
 export default class Home extends Vue {
   loggedIn: boolean = users.isLoggedIn
+
+  created() {
+      bus.$on('loggedOut', () => this.loggedIn = false)
+  }
 }
 </script>
 

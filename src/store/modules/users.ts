@@ -1,6 +1,8 @@
 import { VuexModule, Module, getModule, MutationAction } from 'vuex-module-decorators'
 import store from '@/store'
-import { User } from '@/models/User'
+import { api, setJWT } from '../api'
+import { User, UserSubmit } from '@/models/User'
+import { bus } from '@/main'
 
 @Module({
     namespaced: true,
@@ -12,7 +14,7 @@ import { User } from '@/models/User'
 class UsersModule extends VuexModule {
     user: User | null = this.castToUser() || null
 
-    get userId() {
+    get userId(): number | null {
         return this.user ? this.user.ID : null
     }
 
@@ -20,7 +22,7 @@ class UsersModule extends VuexModule {
         return this.user ? `${this.user.Firstname} ${this.user.Lastname}` : null
     }
 
-    get isLoggedIn() {
+    get isLoggedIn(): boolean {
         return this.user !== null ? true : false
     }
 
@@ -34,6 +36,37 @@ class UsersModule extends VuexModule {
     async logout() {
         localStorage.removeItem('user')
         return {}
+    }
+
+    register(user: User) {
+        return new Promise(resolve => {
+            api.post('/users', user)
+            .then(response => {
+                console.log(response.data)
+                bus.$emit('notify', 'Congratulations! You are successfully registered!')
+                resolve()
+            })
+            .catch(err => {
+                console.log(err)
+                bus.$emit('notify', 'Error occured while registering')
+                resolve()
+            })
+        })
+    }
+
+    signin(user: UserSubmit) {
+        return new Promise(resolve => {
+            api.post('/login', user)
+            .then(response => {
+                this.login(response.data as User)
+                resolve()
+            })
+            .catch(err => {
+                console.log(err)
+                bus.$emit('notify', 'Invalid Email or Password')
+                resolve()
+            })
+        })
     }
 
     castToUser(): User | null {

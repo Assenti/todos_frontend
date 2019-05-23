@@ -33,14 +33,12 @@ export default class Navbar extends Vue {
     loggedIn: boolean = users.isLoggedIn
     dialog: boolean = false
 
-    get username() {
+    get username(): string | null {
         return users.username
     }
 
     created() {
-        bus.$on('loggedIn', () => {
-            this.loggedIn = true
-        })
+        bus.$on('loggedIn', () => this.loggedIn = true)
     }
 
     logout() {

@@ -4,9 +4,15 @@
             <div class="text-xs-center headline primary--text">Sign in</div>
         </v-layout>
         <v-form @submit.prevent="login">
-            <v-alert v-model="alert" type="error" dismissible outline>
+            
+            <v-alert v-model="alert"
+                type="error" 
+                dismissible
+                transition="scale-transition" 
+                outline>
                 {{ message }}
             </v-alert>
+
             <v-text-field
                 prepend-inner-icon="person"
                 v-model="email"
@@ -37,7 +43,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { bus } from '@/main'
 import users from '@/store/modules/users'
-import { api, setJWT } from '@/store/api'
 import { User } from '@/models/User'
 
 @Component
@@ -48,28 +53,27 @@ export default class Login extends Vue {
     alert: boolean = false
     loading: boolean = false
 
-    login() {
-        this.loading = true
-
-        api.post('/login', {
-            email: this.email,
-            password: this.password
-        })
-        .then(response => {
-            users.login(response.data.user as User)
-            bus.$emit('loggedIn')
-        })
-        .catch(err => {
+    created() {
+        bus.$on('notify', (message: string) => {
             this.alert = true
-            this.message = 'Invalid Email or Password'
-        })
-        .then(() => {
-            this.loading = false
+            this.message = message
             setTimeout(() => {
                 this.alert = false
                 this.message = ''
             }, 3000)
         })
+    }
+
+    login() {
+        let data = {
+            email: this.email,
+            password: this.password
+        }
+        this.loading = true
+        
+        users
+        .signin(data)
+        .then(() => this.loading = false)
     }
 }
 
