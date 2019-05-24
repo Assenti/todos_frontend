@@ -89,6 +89,20 @@ class BackendService {
         })
     }
 
+    toggleCompletion(todo: Todo): Promise<Todo> {
+        return new Promise(resolve => {
+            api.get(`/todocompletion?id=${todo.ID}`)
+            .then(response => {
+                resolve(response.data.todo as Todo)
+            })
+            .catch(err => {
+                console.log(err)
+                resolve()
+                bus.$emit('toast', 'Error ocurred while toggling completion')
+            })
+        })
+    }
+
     deleteTodo(todo: Todo) {
         return new Promise(resolve => {
             api.delete(`/todos?id=${todo.ID}`)

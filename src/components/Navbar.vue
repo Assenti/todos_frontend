@@ -2,7 +2,7 @@
     <div>
         <v-toolbar app dense 
             dark flat 
-            color="indigo lighten-2">
+            color="teal">
             <v-toolbar-title class="headline text-uppercase">
                 <span class="font-weight-bold darken-1">Vue </span>
                 <span class="font-weight-light text-none">with </span>
