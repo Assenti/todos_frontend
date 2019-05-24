@@ -25,6 +25,10 @@ class UsersModule extends VuexModule {
         return this.user ? `${this.user.Firstname} ${this.user.Lastname}` : null
     }
 
+    get userEmail() {
+        return this.user ? this.user.Email : null
+    } 
+
     get isLoggedIn(): boolean {
         return this.user !== null ? true : false
     }

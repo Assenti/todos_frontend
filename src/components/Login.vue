@@ -1,7 +1,9 @@
 <template>
     <div class="pa-4">
         <v-layout class="mb-4" justify-center>
-            <div class="text-xs-center headline teal--text">Sign in</div>
+            <div class="text-xs-center headline teal--text">
+                {{ restoreMode ? 'Password Restore' : 'Sign in' }}
+            </div>
         </v-layout>
         <v-form @submit.prevent="login">
             
@@ -16,23 +18,36 @@
             <v-text-field
                 prepend-inner-icon="person"
                 v-model="email"
-                :rules="[v => !!v || 'E-mail is required',
+                :rules="[v => !!v || 'Email is required',
                         v => /.+@.+/.test(v) || 'E-mail must be valid']"
-                label="E-mail"
+                label="Email"
                 required/>
 
             <v-text-field
+                v-if="!restoreMode"
                 prepend-inner-icon="lock"
                 v-model="password"
                 :rules="[v => !!v || 'Password is required']"
                 label="Password"
                 required/>
 
+            <div class="text-xs-right primary--text px-2">
+                <a href="#passwordRestore"
+                    class="link"
+                    @click="restorePassword">
+                    {{ restoreMode ? 'Back' : 'Forgot Password?' }}</a>
+            </div>
+
             <v-layout class="py-3" justify-end>
-                <v-btn type="submit" 
+                <v-btn type="submit"
+                    v-if="!restoreMode" 
                     flat color="teal"
                     :loading="loading" 
                     @click="login">Login</v-btn>
+                <v-btn v-if="restoreMode" 
+                    flat color="teal"
+                    :loading="loading" 
+                    @click.prevent="send">Send</v-btn>
             </v-layout>
                 
         </v-form>
@@ -54,6 +69,7 @@ export default class Login extends Vue {
     message: string = ''
     alert: boolean = false
     loading: boolean = false
+    restoreMode: boolean = false
 
     created() {
         bus.$on('notify', (message: string) => {
@@ -67,16 +83,45 @@ export default class Login extends Vue {
     }
 
     login() {
-        let data = {
-            email: this.email,
-            password: this.password
+        if(!this.restoreMode) {
+            let data = {
+                email: this.email,
+                password: this.password
+            }
+            this.loading = true
+            
+            backendService
+            .signin(data)
+            .then(() => this.loading = false)
         }
+        else {
+            this.send()
+        }
+    }
+
+    restorePassword() {
+        this.restoreMode = !this.restoreMode
+    }
+
+    send() {
         this.loading = true
-        
         backendService
-        .signin(data)
-        .then(() => this.loading = false)
+        .passwordRestore(this.email)
+        .then(() => {
+            this.loading = false
+            setTimeout(() => {
+                this.restoreMode = false
+                this.email = ''
+            }, 3000)
+        })
     }
 }
 
 </script>
+
+<style lang="scss">
+.link {
+    cursor: pointer;
+    text-decoration: none;
+}
+</style>

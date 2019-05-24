@@ -41,6 +41,51 @@ class BackendService {
         })
     }
 
+    passwordRestore(email: string) {
+        return new Promise(resolve => {
+            api.get(`/restorepassword?email=${email}`)
+            .then(response => {
+                resolve()
+                bus.$emit('notify', 'New password was generated! Check your Email, please')
+            })
+            .catch(err => {
+                console.log(err)
+                bus.$emit('notify', 'Invalid Email')
+                resolve()
+            })
+        })
+    }
+
+    passwordChange(user: User) {
+        return new Promise(resolve => {
+            api.post(`/changepassword`, user)
+            .then(response => {
+                resolve()
+                bus.$emit('notify', 'New password was generated! Check your Email, please')
+            })
+            .catch(err => {
+                console.log(err)
+                bus.$emit('notify', err.response.data.message ? err.response.data.message : err.message)
+                resolve()
+            })
+        })
+    }
+
+    passwordCheck(user: User) {
+        return new Promise(resolve => {
+            api.post('/checkpassword', user)
+            .then(response => {
+                resolve()
+                bus.$emit('notify', 'Password successfully checked')
+            })
+            .catch(err => {
+                console.log(err)
+                bus.$emit('notify', err.response.data.message ? err.response.data.message : err.message)
+                resolve()
+            })
+        })
+    }
+
     /********************TODOS METHODS********************/
 
     fetchTodosList(): Promise<Todo[]> {
