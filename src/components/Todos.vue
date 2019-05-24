@@ -68,7 +68,7 @@
       <v-list two-line dense>
         <template v-for="(todo, index) in filteredTodos">
           <v-list-tile
-            :key="todo.ID"
+            :key="`todo-${index}`"
             @click="voidFunc">
             <v-list-tile-avatar class="mx-0 px-0">
               <v-btn flat
@@ -177,7 +177,7 @@ export default class Todos extends Vue {
   }
   
   mounted() {
-    if(todos.getTodos.length == 0 && !this.isTodosBelongToUser()) this.getTodos() 
+    if(todos.getTodos.length == 0) this.getTodos() 
   }
 
   get todosCompletionScore(): number {
@@ -259,15 +259,6 @@ export default class Todos extends Vue {
       })
       this.loader = false
     })
-  }
-
-  isTodosBelongToUser(): boolean | undefined {
-    if(todos.getTodos.length > 0) {
-      users.userId == todos.getTodos[0].UserID
-    }
-    else {
-      return false
-    }
   }
 
   castToBool(value: number): boolean {

@@ -5,7 +5,7 @@ export interface User {
     Email: string
     CreatedAt: string
     Password: string
-    // token: string
+    token: string
 }
 
 export interface UserSubmit {

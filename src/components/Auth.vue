@@ -1,8 +1,8 @@
 <template>
     <v-layout column align-center>
         <v-card width="400">
-            <v-tabs centered color="indigo lighten-2" dark icons-and-text>
-                <v-tabs-slider color="deep-purple"></v-tabs-slider>
+            <v-tabs centered color="teal" dark icons-and-text>
+                <v-tabs-slider color="white"></v-tabs-slider>
                 <v-tab href="#signin">
                     Sign in
                     <v-icon>exit_to_app</v-icon>

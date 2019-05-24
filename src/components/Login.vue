@@ -1,7 +1,7 @@
 <template>
     <div class="pa-4">
         <v-layout class="mb-4" justify-center>
-            <div class="text-xs-center headline primary--text">Sign in</div>
+            <div class="text-xs-center headline teal--text">Sign in</div>
         </v-layout>
         <v-form @submit.prevent="login">
             
@@ -30,7 +30,7 @@
 
             <v-layout class="py-3" justify-end>
                 <v-btn type="submit" 
-                    flat color="primary"
+                    flat color="teal"
                     :loading="loading" 
                     @click="login">Login</v-btn>
             </v-layout>

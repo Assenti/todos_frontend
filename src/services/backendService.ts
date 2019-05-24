@@ -29,6 +29,7 @@ class BackendService {
             api.post('/login', user)
             .then(response => {
                 users.login(response.data.user as User)
+                users.session(response.data.token)
                 bus.$emit('loggedIn')
                 resolve()
             })

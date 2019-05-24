@@ -11,9 +11,14 @@ import { User, UserSubmit } from '@/models/User'
 
 class UsersModule extends VuexModule {
     user: User | null = this.castToUser() || null
+    token: string | null = localStorage.getItem('token')
 
     get userId(): number | null {
         return this.user ? this.user.ID : null
+    }
+
+    get getToken(): string | null {
+        return this.token
     }
 
     get username() {
@@ -31,8 +36,15 @@ class UsersModule extends VuexModule {
     }
 
     @MutationAction
+    async session(token: string) {
+        localStorage.setItem('token', JSON.stringify(token))
+        return { token }
+    }
+
+    @MutationAction
     async logout() {
         localStorage.removeItem('user')
+        localStorage.removeItem('token')
         return {}
     }
 
