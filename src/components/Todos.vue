@@ -15,9 +15,32 @@
           <v-icon>refresh</v-icon>
         </v-btn>
 
-        <v-btn icon>
-          <v-icon>more_vert</v-icon>
-        </v-btn>
+        <v-menu bottom left>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                dark
+                icon
+                v-on="on"
+              >
+                <v-icon>more_vert</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list avatar>
+              <v-list-tile
+                v-for="(item, i) in actions"
+                :key="i"
+                @click="item.action"
+              >
+                <v-list-tile-avatar>
+                    <v-icon>{{ item.icon }}</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-title>
+                    {{ item.title }}
+                </v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
       </v-toolbar>
 
       <v-expand-transition>
@@ -155,6 +178,26 @@
         <edit-todo/>
       </v-dialog>
 
+      <v-dialog
+        v-model="sendingLoader"
+        hide-overlay
+        persistent
+        width="300">
+        <v-card
+            color="teal"
+            dark>
+            <v-card-text>
+                Sending...
+                <v-progress-linear
+                    indeterminate
+                    color="white"
+                    height="3"
+                    class="mb-0"
+                />
+            </v-card-text>
+        </v-card>
+        </v-dialog>
+
     </v-layout>
 </template>
 
@@ -184,6 +227,14 @@ export default class Todos extends Vue {
   search: string = ''
   completedOnly: boolean = false
   importantOnly: boolean = false
+  sendingLoader: boolean = false
+  actions: object[] = [
+      {
+          title: 'Send via Email',
+          icon: 'email',
+          action: this.sendViaEmail
+      }
+  ]
 
   created() {
     bus.$on('toast', (message: string) => {
@@ -290,6 +341,14 @@ export default class Todos extends Vue {
 
   castToBool(value: number): boolean {
     return value == 0 ? false : true
+  }
+
+  sendViaEmail() {
+      this.sendingLoader = true
+      backendService.sendTodosViaEmail(this.todos)
+      .then(() => {
+        this.sendingLoader = false
+      })
   }
 
   voidFunc() {}

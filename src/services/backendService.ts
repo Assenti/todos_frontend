@@ -136,6 +136,7 @@ class BackendService {
                 api.put('/todos', data)
                 .then(response => {
                     resolve(response.data.todo)
+                    bus.$emit('toast', 'Todo successfully updated')
                 })
                 .catch(err => {
                     console.log(err)
@@ -185,6 +186,23 @@ class BackendService {
                 console.log(err)
                 resolve()
                 bus.$emit('toast', 'Error ocurred while deleting todo')
+            })
+        })
+    }
+
+    sendTodosViaEmail(todos: Todo[]) {
+        return new Promise(resolve => {
+            console.log(todos)
+            
+            api.post(`/sendViaEmail?email=${users.userEmail}`, todos)
+            .then(response => {
+                resolve()
+                bus.$emit('toast', 'Successfully sent')
+            })
+            .catch(err => {
+                console.log(err)
+                resolve()
+                bus.$emit('toast', 'Error ocurred while sending todos list')
             })
         })
     }
