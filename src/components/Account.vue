@@ -1,55 +1,46 @@
 <template>
-      <v-card class="pa-2">
-        <v-card-title>
-          <span class="headline">User Profile</span>
-        </v-card-title>
-        <v-card-text class="px-4">
+    <div class="account">
+        <v-layout>
+            <v-navigation-drawer permanent
+                stateless
+                height="100%">
+                <v-toolbar flat height="170px">
+                    <v-layout justify-center align-center>
+                        <v-avatar size="150">
+                            <img src="../assets/rawpixel-579231-unsplash.jpg" alt="">
+                        </v-avatar>
+                    </v-layout>
+                </v-toolbar>
+                <v-divider/>
+                <v-list class="pt-0">
+                    <v-list-tile v-for="(item, index) in sections" 
+                        :key="index" :dark="current === item.name"
+                        :class="{'teal': current === item.name}"
+                        @click="switchSection(item.name)">
+                        <v-list-tile-action>
+                            <v-icon>{{ item.icon }}</v-icon>
+                        </v-list-tile-action>
 
-            <v-alert v-model="alert"
-                type="error"
-                class="mx-2" 
-                dismissible
-                transition="scale-transition" 
-                outline>
-                {{ message }}
-            </v-alert>
-
-            <v-text-field
-                prepend-inner-icon="lock"
-                v-model="password"
-                :loading="loader"
-                :readonly="correctPassword"
-                @change="checkPassword" 
-                label="Current Password"
-                required>
-                <template v-if="correctPassword" slot="append">
-                    <v-icon color="green">check</v-icon>
-                </template>
-            </v-text-field>
-
-            <v-text-field
-                prepend-inner-icon="lock"
-                v-model="newPassword" 
-                label="New Password" 
-                required/>
-
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="grey" flat @click="close">Close</v-btn>
-          <v-btn color="primary" 
-            flat :loading="loading"
-            :disabled="!correctPassword" 
-            @click="change">Save</v-btn>
-        </v-card-actions>
-
-      </v-card>
+                        <v-list-tile-content>
+                            <v-list-tile-title :class="{'white--text': current === item.name}">
+                                {{ item.title }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-navigation-drawer>
+            <v-layout>
+                <component :is="current"/>
+            </v-layout>
+        </v-layout>
+    </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
+import ChangePassword from '@/components/ChangePassword.vue'
+import AccountInfo from '@/components/AccountInfo.vue'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
 import BackendService from '@/services/backendService'
@@ -59,10 +50,10 @@ const backendService = new BackendService()
 
 @Component({
   components: {
-    
+    ChangePassword, AccountInfo
   }
 })
-export default class Todos extends Vue {
+export default class Account extends Vue {
     dialog: boolean = false
     alert: boolean = false
     message: string = ''
@@ -71,6 +62,19 @@ export default class Todos extends Vue {
     password: string = ''
     newPassword: string = ''
     correctPassword: boolean = false
+    current: string = 'AccountInfo'
+    sections: object[] = [
+        {
+            title: 'Account',
+            icon: 'account_circle',
+            name: 'AccountInfo'
+        },
+        {
+            title: 'Change Password',
+            icon: 'lock',
+            name: 'ChangePassword'
+        }
+    ]
 
     created() {
         bus.$on('notify', (message: string) => {
@@ -115,8 +119,18 @@ export default class Todos extends Vue {
         })
     }
 
+    switchSection(section: string) {
+        this.current = section
+    }
+
     close() {
         bus.$emit('closeAccount')
     }
 }
 </script>
+
+<style>
+.account {
+    min-height: calc(100vh - 48px);
+} 
+</style>

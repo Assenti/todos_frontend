@@ -177,7 +177,7 @@ export default class Todos extends Vue {
   }
   
   mounted() {
-    if(todos.getTodos.length == 0) this.getTodos() 
+    // if(todos.getTodos.length == 0) this.getTodos() 
   }
 
   get todosCompletionScore(): number {

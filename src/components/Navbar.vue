@@ -9,9 +9,13 @@
             </v-toolbar-title>
             <v-spacer/>
             <v-toolbar-items>
-                <v-btn v-if="loggedIn"
-                    flat small @click="dialog = !dialog">
+                <v-btn v-if="loggedIn && view === 'Home'"
+                    flat small @click="switchView('Account')">
                     <v-icon small class="mr-1">account_circle</v-icon>Account
+                </v-btn>
+                <v-btn v-if="loggedIn && view === 'Account'"
+                    flat small @click="switchView('Home')">
+                    <v-icon small class="mr-1">home</v-icon>Home
                 </v-btn>
                 <v-btn v-if="loggedIn"
                     flat small @click="logout">
@@ -19,9 +23,6 @@
                 </v-btn>
             </v-toolbar-items>
         </v-toolbar>
-        <v-dialog v-model="dialog" persistent max-width="600px">
-            <account/>
-        </v-dialog>
     </div>
 </template>
 
@@ -39,7 +40,7 @@ import { bus } from '@/main'
 
 export default class Navbar extends Vue {
     loggedIn: boolean = users.isLoggedIn
-    dialog: boolean = false
+    view: string = 'Home'
 
     get username(): string | null {
         return users.username
@@ -47,13 +48,17 @@ export default class Navbar extends Vue {
 
     created() {
         bus.$on('loggedIn', () => this.loggedIn = true)
-        bus.$on('closeAccount', () => this.dialog = false)
     }
 
     logout() {
         users.logout()
         bus.$emit('loggedOut')
         this.loggedIn = false
+    }
+
+    switchView(view: string) {
+        bus.$emit('switchView', view)
+        this.view = view
     }
 }
 </script>

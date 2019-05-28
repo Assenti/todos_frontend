@@ -29,6 +29,10 @@ class UsersModule extends VuexModule {
         return this.user ? this.user.Email : null
     } 
 
+    get registeredDate() {
+        return this.user ? new Date(this.user.CreatedAt).toLocaleDateString() : null
+    }
+
     get isLoggedIn(): boolean {
         return this.user !== null ? true : false
     }
