@@ -5,7 +5,10 @@
             color="teal">
             <v-icon medium>assignment</v-icon>
             <v-toolbar-title class="headline ml-1">
-                <span class="font-weight-bold darken-1">Personal Planner</span>
+                <span class="font-weight-bold darken-1">
+                    Personal Planner
+                    <small class="caption">ver. 2.0</small>
+                </span>
             </v-toolbar-title>
             <v-spacer/>
             <v-toolbar-items>

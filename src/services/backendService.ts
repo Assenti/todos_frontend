@@ -121,6 +121,31 @@ class BackendService {
         })
     }
 
+    updateTodo(value: string, id: number | undefined): Promise<Todo> {
+        return new Promise(resolve => {
+            if(!id) {
+                resolve()
+                bus.$emit('toast', 'Todo id is not passed correctly')
+            }
+            else {
+                let data = {
+                    Value: value,
+                    ID: id
+                }
+                
+                api.put('/todos', data)
+                .then(response => {
+                    resolve(response.data.todo)
+                })
+                .catch(err => {
+                    console.log(err)
+                    resolve()
+                    bus.$emit('toast', 'Error ocurred while sending new todo')
+                })
+            }
+        })
+    }
+
     toggleImportance(todo: Todo): Promise<Todo> {
         return new Promise(resolve => {
             api.get(`/todoimportance?id=${todo.ID}`)

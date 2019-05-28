@@ -25,7 +25,7 @@
           v-if="searchMenu"
           v-model="search"
           prepend-inner-icon="search"
-          clearable
+          clearable color="teal"
           @keyup.escape="searchMenu = false, search = ''"
           label="Search todo"
           hint="Start type..."
@@ -104,12 +104,20 @@
             </v-list-tile-content>
 
             <v-list-tile-action>
-              <v-btn icon
-                flat
-                @click="deleteTodo(todo, index)"
-                ripple>
-                <v-icon small>delete</v-icon>
-              </v-btn>
+                <v-layout>
+                    <v-btn icon
+                        flat right
+                        @click="editTodo(todo)"
+                        ripple>
+                        <v-icon small>edit</v-icon>
+                    </v-btn>
+                    <v-btn icon
+                        flat
+                        @click="deleteTodo(todo, index)"
+                        ripple>
+                        <v-icon small>delete</v-icon>
+                    </v-btn>
+                </v-layout>
             </v-list-tile-action>
           </v-list-tile>
           <v-divider :key="index" v-if="index < todos.length - 1"/>
@@ -141,12 +149,19 @@
         </v-btn>
       </v-snackbar>
 
+      <v-dialog v-model="dialog"
+        min-width="400px"
+        width="50%">
+        <edit-todo/>
+      </v-dialog>
+
     </v-layout>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
+import EditTodo from '@/components/EditTodo.vue'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
 import BackendService from '@/services/backendService'
@@ -155,12 +170,13 @@ const backendService = new BackendService()
 
 @Component({
   components: {
-    
+    EditTodo
   }
 })
 export default class Todos extends Vue {
   todos: Todo[] = todos.getTodos
   todo: string = ''
+  dialog: boolean = false
   snackbar: boolean = false
   notify: string = ''
   loader: boolean = false
@@ -174,10 +190,16 @@ export default class Todos extends Vue {
       this.snackbar = true
       this.notify = message
     })
+    bus.$on('finishEdit', () => {
+      this.dialog = false
+    })
+    bus.$on('refreshTodos', (todos: Todo[]) => {
+        this.todos = todos
+    })
   }
   
   mounted() {
-    // if(todos.getTodos.length == 0) this.getTodos() 
+    if(todos.getTodos.length == 0) this.getTodos() 
   }
 
   get todosCompletionScore(): number {
@@ -224,6 +246,11 @@ export default class Todos extends Vue {
       this.todos.push(todo)
       todos.setTodos(this.todos as Todo[])
     })
+  }
+
+  editTodo(todo: Todo) {
+      bus.$emit('editTodo', todo)
+      this.dialog = true
   }
 
   toggleImportance(todo: Todo, index: number) {
