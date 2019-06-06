@@ -1,17 +1,12 @@
 <template>
     <div class="home">
-        <v-layout class="home-layout" align-center justify-space-around>
-            <v-flex class="hidden-xs-only" xs12 sm5>
-                <v-layout column align-center>
-                    <h1 class="display-2 teal--text text-xs-center">
-                        Personal Planner
-                        <small class="caption">ver. 2.0</small>
-                    </h1>
-                    <h3 class="headline text-xs-center">Web application</h3>
-                    <h3 class="subheading text-xs-center">by Asset Sultanov</h3>
-                </v-layout>
+        <v-layout wrap class="home-layout"
+            align-center
+            justify-space-around>
+            <v-flex class="hidden-sm-and-down" xs12 sm12 md4>
+                <welcome-text/>
             </v-flex>
-            <v-flex xs12 sm5>
+            <v-flex xs12 sm12 md6>
                 <auth v-if="!loggedIn"/>
                 <todos v-else/>
             </v-flex>
@@ -32,13 +27,14 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Auth from '@/components/Auth.vue'
+import WelcomeText from '@/components/WelcomeText.vue'
 import Todos from '@/components/Todos.vue'
 import users from '@/store/modules/users'
 import { bus } from '@/main'
 
 @Component({
   components: {
-    Auth, Todos
+    Auth, Todos, WelcomeText
   },
 })
 export default class Home extends Vue {
@@ -64,5 +60,9 @@ export default class Home extends Vue {
 }
 .this-logo {
     width: 100px;
+}
+.this-github-logo {
+    width: 18px;
+    margin: 0 4px;
 }
 </style>

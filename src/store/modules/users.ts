@@ -21,6 +21,10 @@ class UsersModule extends VuexModule {
         return this.token
     }
 
+    get getAvatar(): string | null {
+        return this.user ? this.user.Avatar : null
+    }
+
     get username() {
         return this.user ? `${this.user.Firstname} ${this.user.Lastname}` : null
     }

@@ -1,37 +1,55 @@
 <template>
-    <v-layout column>
-      <v-toolbar dark dense flat color="teal">
-        <v-toolbar-title class="white--text">Tasks: {{ todos.length }}</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn icon
-          @click="searchMenu = !searchMenu">
-          <v-icon>search</v-icon>
-        </v-btn>
-
-        <v-btn icon
-          @click="getTodos">
-          <v-icon>refresh</v-icon>
-        </v-btn>
-
-        <v-menu bottom left>
+    <v-layout column class="this-todos">
+      <v-toolbar dense dark flat color="teal">
+        <v-toolbar-title>
+          <v-tooltip top>
             <template v-slot:activator="{ on }">
-              <v-btn
-                dark
-                icon
-                v-on="on"
-              >
+              <v-btn flat icon dark
+                class="mr-2" v-on="on"
+                @click="openCalendar">
+                <v-icon>date_range</v-icon>
+              </v-btn>
+            </template>
+            <span>Open Calendar</span>
+          </v-tooltip>
+         
+        </v-toolbar-title>
+
+        <v-spacer/>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on"
+              @click="searchMenu = !searchMenu">
+              <v-icon>search</v-icon>
+            </v-btn>
+          </template>
+          <span>Search todo</span>
+        </v-tooltip>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on"
+              @click="getTodos">
+              <v-icon>refresh</v-icon>
+            </v-btn>
+          </template>
+          <span>Refresh todos</span>
+        </v-tooltip>
+
+        <v-menu bottom left offset-y min-width="300"> 
+            <template v-slot:activator="{ on }">
+              <v-btn icon
+                v-on="on">
                 <v-icon>more_vert</v-icon>
               </v-btn>
             </template>
 
-            <v-list avatar>
+            <v-list avatar dense>
               <v-list-tile
                 v-for="(item, i) in actions"
                 :key="i"
-                @click="item.action"
-              >
+                @click="item.action">
                 <v-list-tile-avatar>
                     <v-icon>{{ item.icon }}</v-icon>
                 </v-list-tile-avatar>
@@ -48,6 +66,7 @@
           v-if="searchMenu"
           v-model="search"
           prepend-inner-icon="search"
+          class="px-3"
           clearable color="teal"
           @keyup.escape="searchMenu = false, search = ''"
           label="Search todo"
@@ -55,110 +74,170 @@
           persistent-hint/>
       </v-expand-transition>
       
-      <v-layout align-center>
-        <v-text-field
-          v-model="todo"
-          prepend-inner-icon="assignment"
-          clearable
-          append-icon="add_box"
-          @click:append="addTodo"
-          @keyup.enter="addTodo"
-          required
-          :loading="loader"
-          label="Todo"
-          hint="Type your todo and press 'Enter' or click '+' button"
-          persistent-hint
-          :rules="[v => !!v || 'Todo must be provided']"
-          />
-          <v-progress-circular
-            :rotate="-90"
-            :size="50"
-            :width="7"
-            class="ml-2"
-            :value="todosCompletionPercentage"
-            color="teal">
+      <div class="this-todos-list">
+        <v-layout align-center class="px-3">
+          <v-text-field
+            v-model="todo"
+            prepend-inner-icon="assignment"
+            clearable
+            append-icon="add_box"
+            @click:append="addTodo"
+            @keyup.enter="addTodo"
+            required
+            :loading="loader"
+            label="Todo"
+            hint="Type your todo and press 'Enter' or click '+' button"
+            persistent-hint
+            :rules="[v => !!v || 'Todo must be provided']"
+            />
+            <v-progress-circular
+              :rotate="-90"
+              :size="50"
+              :width="7"
+              class="ml-2"
+              :value="todosCompletionPercentage"
+              color="teal">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <span v-on="on">
+                    {{ todosCompletionScore }}
+                  </span>
+                </template>
+                <span>Completed todos</span>
+              </v-tooltip>
+            </v-progress-circular>
+        </v-layout>
+
+        <v-list two-line dense>
+          <template v-for="(todo, index) in filteredTodos">
+            <v-list-tile
+              :key="`todo-${index}`"
+              class="this-list-item"
+              @click="voidFunc">
+              <v-list-tile-avatar class="mx-0 px-0">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn flat
+                      icon v-on="on"
+                      class="mx-0 px-0"
+                      :loading="loader"
+                      :color="todo.Completed == 1 ? 'green' : ''"
+                      @click="toggleCompletion(todo, index)">
+                      <v-icon>check_circle</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Completion Indicator</span>
+                </v-tooltip>
+              </v-list-tile-avatar>
+              <v-list-tile-avatar class="mx-0 px-0">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn flat
+                      icon v-on="on"
+                      :disabled="castToBool(todo.Completed)"
+                      class="mx-0 px-0"
+                      :loading="loader"
+                      :color="todo.Important == 1 ? 'red' : ''"
+                      @click="toggleImportance(todo, index)">
+                      <v-icon>flag</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Importance Indicator</span>
+                </v-tooltip>
+              </v-list-tile-avatar>
+
+              <v-list-tile-content>
+                <v-list-tile-title :class="{'completed': todo.Completed}">
+                  {{ todo.Value }}</v-list-tile-title>
+                <v-list-tile-sub-title class="caption"
+                  :class="{'completed': todo.Completed}">
+                  created at: {{ new Date(todo.CreatedAt).toLocaleDateString() }}
+                </v-list-tile-sub-title>
+              </v-list-tile-content>
+
+              <v-list-tile-action>
+                  <v-layout>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn icon
+                              v-on="on"
+                              flat right
+                              :disabled="todo.Completed == 1 ? true : false "
+                              @click="editTodo(todo)"
+                              ripple>
+                              <v-icon small>edit</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Edit todo</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn icon
+                              flat v-on="on"
+                              @click="deleteTodo(todo, index)"
+                              ripple>
+                              <v-icon small>delete</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>Delete todo</span>
+                      </v-tooltip>
+                  </v-layout>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider :key="index" v-if="index < todos.length - 1"/>
+          </template>
+        </v-list>
+      </div>
+      <v-footer height="auto"
+        class="px-2" dark
+        color="teal">
+        <v-layout align-center justify-space-between>
+          <div>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
-                <span v-on="on">
-                  {{ todosCompletionScore }}
-                </span>
+                <v-btn icon v-on="on"
+                  class="mr-3" 
+                  @click="completedOnly = !completedOnly">
+                  <v-icon>check_circle</v-icon>
+                </v-btn>
               </template>
-              <span>Completed todos</span>
+              <span>Show Completed Only</span>
             </v-tooltip>
-          </v-progress-circular>
-      </v-layout>
-
-      <v-list two-line dense>
-        <template v-for="(todo, index) in filteredTodos">
-          <v-list-tile
-            :key="`todo-${index}`"
-            @click="voidFunc">
-            <v-list-tile-avatar class="mx-0 px-0">
-              <v-btn flat
-                icon
-                class="mx-0 px-0"
-                :loading="loader"
-                title="Completion Indicator"
-                :color="todo.Completed == 1 ? 'green' : ''"
-                @click="toggleCompletion(todo, index)">
-                <v-icon>check_circle</v-icon>
-              </v-btn>
-            </v-list-tile-avatar>
-            <v-list-tile-avatar class="mx-0 px-0">
-              <v-btn flat
-                icon
-                :disabled="castToBool(todo.Completed)"
-                class="mx-0 px-0"
-                :loading="loader"
-                title="Importance Indicator"
-                :color="todo.Important == 1 ? 'red' : ''"
-                @click="toggleImportance(todo, index)">
-                <v-icon>flag</v-icon>
-              </v-btn>
-            </v-list-tile-avatar>
-
-            <v-list-tile-content>
-              <v-list-tile-title :class="{'completed': todo.Completed}">
-                {{ todo.Value }}</v-list-tile-title>
-              <v-list-tile-sub-title class="caption"
-                :class="{'completed': todo.Completed}">
-                created at: {{ new Date(todo.CreatedAt).toLocaleDateString() }}
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-
-            <v-list-tile-action>
-                <v-layout>
-                    <v-btn icon
-                        flat right
-                        @click="editTodo(todo)"
-                        ripple>
-                        <v-icon small>edit</v-icon>
-                    </v-btn>
-                    <v-btn icon
-                        flat
-                        @click="deleteTodo(todo, index)"
-                        ripple>
-                        <v-icon small>delete</v-icon>
-                    </v-btn>
-                </v-layout>
-            </v-list-tile-action>
-          </v-list-tile>
-          <v-divider :key="index" v-if="index < todos.length - 1"/>
-        </template>
-      </v-list>
-      <v-footer height="auto"
-        dark class="px-2"
-        color="teal">
-        <v-layout>
-          <v-btn icon
-            class="mr-3" 
-            @click="completedOnly = !completedOnly">
-            <v-icon>check_circle</v-icon>
-          </v-btn>
-          <v-btn icon 
-            @click="importantOnly = !importantOnly">
-            <v-icon>flag</v-icon>
-          </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on"
+                  @click="importantOnly = !importantOnly">
+                  <v-icon>flag</v-icon>
+                </v-btn>
+              </template>
+              <span>Show Important Only</span>
+            </v-tooltip>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on"
+                  @click="importantOnly = completedOnly = false">
+                  <v-icon>format_align_justify</v-icon>
+                </v-btn>
+              </template>
+              <span>Show All</span>
+            </v-tooltip>
+          </div>
+          <div>
+            <span class="body-1 white--text">All Tasks: {{ todos.length }}</span>
+            <span class="body-1 white--text mx-2">|</span>
+            <span class="body-1 white--text">Remaining: {{ todos.length - todosCompletionScore }}</span>
+          </div>
+          <div>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on"
+                  @click="deleteCompleted">
+                  <v-icon>delete_forever</v-icon>
+                </v-btn>
+              </template>
+              <span>Delete All Completed</span>
+            </v-tooltip>
+          </div>
         </v-layout>
       </v-footer>
 
@@ -183,19 +262,18 @@
         hide-overlay
         persistent
         width="300">
-        <v-card
-            color="teal"
-            dark>
-            <v-card-text>
-                Sending...
-                <v-progress-linear
-                    indeterminate
-                    color="white"
-                    height="3"
-                    class="mb-0"
-                />
-            </v-card-text>
-        </v-card>
+          <v-card dark
+              color="teal">
+              <v-card-text>
+                  Sending...
+                  <v-progress-linear
+                      indeterminate
+                      color="white"
+                      height="3"
+                      class="mb-0"
+                  />
+              </v-card-text>
+          </v-card>
         </v-dialog>
 
     </v-layout>
@@ -228,6 +306,7 @@ export default class Todos extends Vue {
   completedOnly: boolean = false
   importantOnly: boolean = false
   sendingLoader: boolean = false
+  calendarView: boolean = false
   actions: object[] = [
       {
           title: 'Send via Email',
@@ -271,6 +350,16 @@ export default class Todos extends Vue {
         return todo.Value.toLowerCase().includes(this.search.toLowerCase())
       })
     }
+    else if(this.completedOnly) {
+      return this.todos.filter(todo => {
+        return todo.Completed
+      })
+    }
+    else if(this.importantOnly) {
+      return this.todos.filter(todo => {
+        return todo.Important
+      })
+    }
     else {
       return this.todos
     }
@@ -302,6 +391,10 @@ export default class Todos extends Vue {
   editTodo(todo: Todo) {
       bus.$emit('editTodo', todo)
       this.dialog = true
+  }
+
+  deleteCompleted() {
+    // TODO: implement func
   }
 
   toggleImportance(todo: Todo, index: number) {
@@ -339,6 +432,10 @@ export default class Todos extends Vue {
     })
   }
 
+  openCalendar() {
+    this.calendarView = !this.calendarView
+  }
+
   castToBool(value: number): boolean {
     return value == 0 ? false : true
   }
@@ -357,7 +454,23 @@ export default class Todos extends Vue {
 </script>
 
 <style lang="scss">
+.this-todos {
+  max-height: calc(100vh - 48px);
+  overflow-y: none;
+}
+.this-todos-list {
+  max-height: calc(100% - 48px);
+  overflow-y: auto;
+}
 .completed {
   text-decoration: line-through;
+}
+.this-list-item {
+  outline-offset: -1px;
+  outline: 1px solid transparent !important;
+  &:hover {
+    background-color: #E0F2F1 !important;
+    outline: 1px solid #009688 !important;
+  }
 }
 </style>

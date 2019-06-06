@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-toolbar app dense 
-            dark flat 
+            flat dark
             color="teal">
             <v-icon medium>assignment</v-icon>
             <v-toolbar-title class="headline ml-1">

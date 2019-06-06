@@ -1,7 +1,7 @@
 <template>
     <v-layout column align-center>
         <v-card width="400">
-            <v-tabs centered color="teal" dark icons-and-text>
+            <v-tabs centered color="teal" icons-and-text>
                 <v-tabs-slider color="white"></v-tabs-slider>
                 <v-tab href="#signin">
                     Sign in
