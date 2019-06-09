@@ -83,7 +83,7 @@
             append-icon="add_box"
             @click:append="addTodo"
             @keyup.enter="addTodo"
-            required
+            required color="teal"
             :loading="loader"
             label="Todo"
             hint="Type your todo and press 'Enter' or click '+' button"
@@ -112,7 +112,7 @@
           <template v-for="(todo, index) in filteredTodos">
             <v-list-tile
               :key="`todo-${index}`"
-              class="this-list-item"
+              class="this-list-item animated bounceInUp fast"
               @click="voidFunc">
               <v-list-tile-avatar class="mx-0 px-0">
                 <v-tooltip top>
@@ -151,7 +151,7 @@
                   {{ todo.Value }}</v-list-tile-title>
                 <v-list-tile-sub-title class="caption"
                   :class="{'completed': todo.Completed}">
-                  created at: {{ new Date(todo.CreatedAt).toLocaleDateString() }}
+                  created at: {{ new Date(todo.CreatedAt).toISOString().substr(0, 10) }}
                 </v-list-tile-sub-title>
               </v-list-tile-content>
 
@@ -370,7 +370,8 @@ export default class Todos extends Vue {
     this.loader = true
     backendService
     .fetchTodosList()
-    .then((todos) => {
+    .then(todos => {
+      console.log(todos)
       this.todos = todos
       this.loader = false
     })
@@ -433,7 +434,7 @@ export default class Todos extends Vue {
   }
 
   openCalendar() {
-    this.calendarView = !this.calendarView
+    bus.$emit('openCalendar')
   }
 
   castToBool(value: number): boolean {

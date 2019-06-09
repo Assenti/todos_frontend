@@ -8,6 +8,7 @@ export interface Todo {
     UserID: number
     CreatedAt: string
     UpdatedAt: string 
+    Menu: boolean
 }
 
 export interface TodosResponse {

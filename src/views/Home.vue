@@ -4,7 +4,7 @@
             align-center
             justify-space-around>
             <v-flex class="hidden-sm-and-down" xs12 sm12 md4>
-                <welcome-text/>
+                <component class="animated bounceInLeft fast" :is="current"/>
             </v-flex>
             <v-flex xs12 sm12 md6>
                 <auth v-if="!loggedIn"/>
@@ -28,13 +28,14 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Auth from '@/components/Auth.vue'
 import WelcomeText from '@/components/WelcomeText.vue'
+import TodosCalendar from '@/components/TodosCalendar.vue'
 import Todos from '@/components/Todos.vue'
 import users from '@/store/modules/users'
 import { bus } from '@/main'
 
 @Component({
   components: {
-    Auth, Todos, WelcomeText
+    Auth, Todos, WelcomeText, TodosCalendar
   },
 })
 export default class Home extends Vue {
@@ -42,8 +43,11 @@ export default class Home extends Vue {
     dialog: boolean = false
     snackbar: boolean = false
     notify: string = ''
+    current: string = 'WelcomeText'
 
     created() {
+        bus.$on('openCalendar', () => this.current = 'TodosCalendar')
+        bus.$on('hideCalendar', () => this.current = 'WelcomeText')
         bus.$on('loggedOut', () => this.loggedIn = false)
         bus.$on('loggedIn', () => this.loggedIn = true)
         bus.$on('toast', (message: string) => {

@@ -92,10 +92,14 @@ class BackendService {
         return new Promise(resolve => {
             api.get(`/usertodos?userid=${users.userId}`)
             .then(response => {
-                resolve(response.data.todos as Todo[])
-                todos.setTodos(response.data.todos as Todo[])
+                let receivedTodos = response.data.todos 
+                // let dates = response.data.dates  
+                resolve(receivedTodos as Todo[])
+                todos.setTodos(receivedTodos as Todo[])
+                // todos.setTodosDates(dates as Date[])
             })
             .catch(err => {
+                console.log(err)
                 resolve()
                 bus.$emit('toast', 'Error ocurred while downloading todos list')
             })
