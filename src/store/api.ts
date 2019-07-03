@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const backendURL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : ''
+const prodUrl = 'https://planner-restapi.herokuapp.com'
+const backendURL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : prodUrl
 
 export const api = axios.create({
     baseURL: backendURL
