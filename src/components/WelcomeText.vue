@@ -22,3 +22,14 @@
         </v-layout>
     </v-layout>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+
+@Component({
+})
+export default class WelcomeText extends Vue {
+
+}
+</script>
+

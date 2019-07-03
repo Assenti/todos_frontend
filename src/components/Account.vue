@@ -81,6 +81,7 @@ import todos from '@/store/modules/todos'
 import BackendService from '@/services/backendService'
 import { bus } from '@/main'
 import { User } from '../models/User'
+import { IFile } from '../models/File'
 const backendService = new BackendService()
 
 @Component({
@@ -99,10 +100,13 @@ export default class Account extends Vue {
     correctPassword: boolean = false
     avatarMenu: boolean = false
     fileName: string = 'Click to choose or Drag&Drop'
-    file: object = {}
+    file!: IFile | null
     screenSize: boolean = false
     drawer:boolean = true
     current: string = 'AccountInfo'
+    $refs!: Vue['$refs'] & {
+        file: HTMLInputElement | null
+    }
     sections: object[] = [
         {
             title: 'Account',
@@ -141,9 +145,9 @@ export default class Account extends Vue {
     checkPassword() {
         this.loader = true
         let data = {
-            ID: users.userId,
-            Email: users.userEmail,
-            Password: this.password
+            id: users.userId,
+            email: users.userEmail,
+            password: this.password
         }
         backendService
         .passwordCheck(data as User)
@@ -156,9 +160,9 @@ export default class Account extends Vue {
     change() {
         this.loading = true
         let data = {
-            ID: users.userId,
-            Email: users.userEmail,
-            Password: this.newPassword
+            id: users.userId,
+            email: users.userEmail,
+            password: this.newPassword
         }
         backendService
         .passwordChange(data as User)
@@ -176,8 +180,9 @@ export default class Account extends Vue {
     }
 
     selectFile() {
-        this.file = this.$refs.file.files[0]
-        this.fileName = `${this.$refs.file.files[0].name} (${(this.$refs.file.files[0].size / 1024 / 1024).toFixed(1)} MB)`
+        let file = this.$refs.file as HTMLInputElement
+        this.file = file.files != null ? file.files[0] : null
+        this.fileName = `${this.file ? this.file.name : ''} (${this.file ? (this.file.size / 1024 / 1024).toFixed(1) : 0} MB)`
         console.log(this.file)
     }
 

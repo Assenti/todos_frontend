@@ -27,16 +27,22 @@
                 v-if="!restoreMode"
                 prepend-inner-icon="lock"
                 v-model="password"
+                type="password"
                 :rules="[v => !!v || 'Password is required']"
                 label="Password"
                 required/>
 
-            <div class="text-xs-right primary--text px-2">
-                <a href="#passwordRestore"
-                    class="link"
-                    @click="restorePassword">
-                    {{ restoreMode ? 'Back' : 'Forgot Password?' }}</a>
-            </div>
+            <v-layout align-center justify-space-between>
+                <v-checkbox v-model="remember"
+                    color="teal"
+                    label="Remember me"/>
+                <div class="text-xs-right primary--text px-2">
+                    <a href="#passwordRestore"
+                        class="link"
+                        @click="restorePassword">
+                        {{ restoreMode ? 'Back' : 'Forgot Password?' }}</a>
+                </div>
+            </v-layout>
 
             <v-layout class="py-3" justify-end>
                 <v-btn type="submit"
@@ -70,6 +76,7 @@ export default class Login extends Vue {
     alert: boolean = false
     loading: boolean = false
     restoreMode: boolean = false
+    remember: boolean = false
 
     created() {
         bus.$on('notify', (message: string) => {
@@ -82,17 +89,24 @@ export default class Login extends Vue {
         })
     }
 
-    login() {
+    async login() {
         if(!this.restoreMode) {
             let data = {
                 email: this.email,
-                password: this.password
+                password: this.password,
+                remember: this.remember
             }
-            this.loading = true
             
-            backendService
-            .signin(data)
-            .then(() => this.loading = false)
+            try {
+                this.loading = true
+                await backendService.signin(data)
+            }
+            catch (e) {
+                console.log(e)
+            }
+            finally {
+                this.loading = false
+            }
         }
         else {
             this.send()

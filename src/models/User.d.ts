@@ -1,17 +1,18 @@
 export interface User {
-    ID: number
-    Firstname: string
-    Lastname: string
-    Email: string
-    CreatedAt: string
-    Password: string
+    id: number
+    firstname: string
+    lastname: string
+    email: string
+    createdAt: string
+    password: string
     token: string,
-    Avatar: string
+    avatar: string
 }
 
 export interface UserSubmit {
     email: string
-    password: string
+    password: string,
+    remember: boolean
 }
 
 export interface UserResponse {

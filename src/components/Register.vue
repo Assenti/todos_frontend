@@ -143,10 +143,10 @@ export default class Register extends Vue {
 
     signUp() {
         let newUser = {
-            Firstname: this.firstname,
-            Lastname: this.lastname,
-            Email: this.email,
-            Password: this.password
+            firstname: this.firstname,
+            lastname: this.lastname,
+            email: this.email,
+            password: this.password
         }
 
         backendService

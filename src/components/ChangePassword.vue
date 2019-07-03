@@ -88,9 +88,9 @@ export default class ChangePassword extends Vue {
     checkPassword() {
         this.loader = true
         let data = {
-            ID: users.userId,
-            Email: users.userEmail,
-            Password: this.password
+            id: users.userId,
+            email: users.userEmail,
+            password: this.password
         }
         backendService
         .passwordCheck(data as User)
@@ -103,9 +103,9 @@ export default class ChangePassword extends Vue {
     change() {
         this.loading = true
         let data = {
-            ID: users.userId,
-            Email: users.userEmail,
-            Password: this.newPassword
+            id: users.userId,
+            email: users.userEmail,
+            password: this.newPassword
         }
         backendService
         .passwordChange(data as User)

@@ -5,8 +5,7 @@
         </v-card-title>
         <v-card-text class="px-4">
             <v-list avatar two-line>
-                <v-list-tile v-for="(item, index) in items"
-                    :key="index">
+                <v-list-tile v-for="(item, index) in items" :key="index">
                     <v-list-tile-avatar>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-tile-avatar>
@@ -42,7 +41,7 @@ export default class AccountInfo extends Vue {
 
     items: object[] = [
         {
-            title: this.userName,
+            title: users.username,
             desc: 'User name',
             icon: 'person'
         },
@@ -56,11 +55,11 @@ export default class AccountInfo extends Vue {
             desc: 'User registered date',
             icon: 'event'
         },
-        {
-            title: `${32} years old`,
-            desc: 'User birth date',
-            icon: 'cake'
-        }
+        // {
+        //     title: `${32} years old`,
+        //     desc: 'User birth date',
+        //     icon: 'cake'
+        // }
     ]
 }
 </script>

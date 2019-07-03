@@ -6,59 +6,59 @@ import users from '../store/modules/users'
 import todos from '../store/modules/todos'
 
 class BackendService {
-    /********************USER METHODS********************/
-
     register(user: User) {
-        return new Promise(resolve => {
-            api.post('/users', user)
-            .then(response => {
-                console.log(response.data)
+        return new Promise(async (resolve, reject) => {
+            try {
+                await api.post('api/users', user)
                 bus.$emit('notify', 'Congratulations! You are successfully registered!')
-                resolve()
-            })
-            .catch(err => {
-                console.log(err)
+                resolve()    
+            }
+            catch (e) {
+                reject(e)
                 bus.$emit('notify', 'Error occured while registering')
-                resolve()
-            })
+            }
         })
     }
 
     signin(user: UserSubmit) {
-        return new Promise(resolve => {
-            api.post('/login', user)
-            .then(response => {
-                users.login(response.data.user as User)
-                users.session(response.data.token)
-                bus.$emit('loggedIn')
-                resolve()
-            })
-            .catch(err => {
-                console.log(err)
+        return new Promise(async (resolve, reject) => {
+            try {
+                const { data } = await api.post('api/login', user)
+                if(data) {
+                    users.login(data.user)
+                    bus.$emit('loggedIn')
+                    resolve()
+                }
+                else {
+                    reject()
+                    bus.$emit('notify', 'Error occurred while signing in')
+                }
+            }
+            catch (e) {
+                reject(e)
                 bus.$emit('notify', 'Invalid Email or Password')
-                resolve()
-            })
+            }
         })
     }
 
     passwordRestore(email: string) {
-        return new Promise(resolve => {
-            api.get(`/restorepassword?email=${email}`)
-            .then(response => {
-                resolve()
+        return new Promise(async (resolve, reject) => {
+            try {
+                await api.get(`api/restorepassword?email=${email}`)
                 bus.$emit('notify', 'New password was generated! Check your Email, please')
-            })
-            .catch(err => {
-                console.log(err)
-                bus.$emit('notify', 'Invalid Email')
                 resolve()
-            })
+            }
+            catch (e) {
+                console.log(e)
+                bus.$emit('notify', 'Invalid Email')
+                reject(e)
+            }
         })
     }
 
     passwordChange(user: User) {
         return new Promise(resolve => {
-            api.post(`/changepassword`, user)
+            api.post(`api/changepassword`, user)
             .then(response => {
                 resolve()
                 bus.$emit('notify', 'New password was generated! Check your Email, please')
@@ -73,7 +73,7 @@ class BackendService {
 
     passwordCheck(user: User) {
         return new Promise(resolve => {
-            api.post('/checkpassword', user)
+            api.post('api/checkpassword', user)
             .then(response => {
                 resolve()
                 bus.$emit('notify', 'Password successfully checked')
@@ -90,7 +90,7 @@ class BackendService {
 
     fetchTodosList(): Promise<Todo[]> {
         return new Promise(resolve => {
-            api.get(`/usertodos?userid=${users.userId}`)
+            api.get(`api/usertodos?userid=${users.userId}`)
             .then(response => {
                 let receivedTodos = response.data.todos 
                 // let dates = response.data.dates  
@@ -113,7 +113,7 @@ class BackendService {
                 UserID: users.userId
             }
             
-            api.post('/todos', data)
+            api.post('api/todos', data)
             .then(response => {
                 resolve(response.data.todo)
             })
@@ -137,7 +137,7 @@ class BackendService {
                     ID: id
                 }
                 
-                api.put('/todos', data)
+                api.put('api/todos', data)
                 .then(response => {
                     resolve(response.data.todo)
                     bus.$emit('toast', 'Todo successfully updated')
@@ -153,7 +153,7 @@ class BackendService {
 
     toggleImportance(todo: Todo): Promise<Todo> {
         return new Promise(resolve => {
-            api.get(`/todoimportance?id=${todo.ID}`)
+            api.get(`api/todoimportance?id=${todo.ID}`)
             .then(response => {
                 resolve(response.data.todo as Todo)
             })
@@ -167,7 +167,7 @@ class BackendService {
 
     toggleCompletion(todo: Todo): Promise<Todo> {
         return new Promise(resolve => {
-            api.get(`/todocompletion?id=${todo.ID}`)
+            api.get(`api/todocompletion?id=${todo.ID}`)
             .then(response => {
                 resolve(response.data.todo as Todo)
             })
@@ -181,7 +181,7 @@ class BackendService {
 
     deleteTodo(todo: Todo) {
         return new Promise(resolve => {
-            api.delete(`/todos?id=${todo.ID}`)
+            api.delete(`api/todos?id=${todo.ID}`)
             .then(response => {
                 console.log(response.data)
                 resolve('success')
@@ -198,7 +198,7 @@ class BackendService {
         return new Promise(resolve => {
             console.log(todos)
             
-            api.post(`/sendViaEmail?email=${users.userEmail}`, todos)
+            api.post(`api/sendViaEmail?email=${users.userEmail}`, todos)
             .then(response => {
                 resolve()
                 bus.$emit('toast', 'Successfully sent')
