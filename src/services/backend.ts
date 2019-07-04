@@ -86,42 +86,40 @@ class BackendService {
         })
     }
 
-    /********************TODOS METHODS********************/
-
+    // Fetching logged user todos
     fetchTodosList(): Promise<Todo[]> {
-        return new Promise(resolve => {
-            api.get(`api/usertodos?userid=${users.userId}`)
-            .then(response => {
-                let receivedTodos = response.data.todos 
+        return new Promise(async (resolve, reject) => {
+            
+            try {
+                const { data } = await api.get(`api/usertodos?userid=${users.userId}`)
+                let receivedTodos = data.todos 
                 // let dates = response.data.dates  
                 resolve(receivedTodos as Todo[])
                 todos.setTodos(receivedTodos as Todo[])
                 // todos.setTodosDates(dates as Date[])
-            })
-            .catch(err => {
-                console.log(err)
-                resolve()
+            }
+            catch (e) {
                 bus.$emit('toast', 'Error ocurred while downloading todos list')
-            })
+                reject(e)
+            }
         })
     }
 
     addTodo(todo: string): Promise<Todo> {
-        return new Promise(resolve => {
-            let data = {
+        return new Promise(async (resolve, reject) => {
+            let credentials = {
                 Value: todo,
                 UserID: users.userId
             }
             
-            api.post('api/todos', data)
-            .then(response => {
-                resolve(response.data.todo)
-            })
-            .catch(err => {
-                console.log(err)
-                resolve()
+            try {
+                const { data } = await api.post('api/todos', credentials)
+                resolve(data.todo)
+            }
+            catch (e) {
+                reject(e)
                 bus.$emit('toast', 'Error ocurred while sending new todo')
-            })
+            }
         })
     }
 
@@ -180,17 +178,15 @@ class BackendService {
     }
 
     deleteTodo(todo: Todo) {
-        return new Promise(resolve => {
-            api.delete(`api/todos?id=${todo.ID}`)
-            .then(response => {
-                console.log(response.data)
+        return new Promise(async (resolve, reject) => {
+            try {
+                await api.delete(`api/todos?id=${todo.ID}`)
                 resolve('success')
-            })
-            .catch(err => {
-                console.log(err)
-                resolve()
+            }
+            catch (e) {
+                reject(e)
                 bus.$emit('toast', 'Error ocurred while deleting todo')
-            })
+            }
         })
     }
 

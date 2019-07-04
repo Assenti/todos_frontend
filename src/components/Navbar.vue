@@ -57,8 +57,7 @@ export default class Navbar extends Vue {
         users.logout()
         bus.$emit('loggedOut')
         this.loggedIn = false
-        this.switchView('Home')
-        console.log(users.isLoggedIn)
+        location.reload()
     }
 
     switchView(view: string) {

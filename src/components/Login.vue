@@ -65,7 +65,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { bus } from '@/main'
 import users from '@/store/modules/users'
 import { User } from '@/models/User'
-import BackendService from '@/services/backendService'
+import BackendService from '@/services/backend'
 const backendService = new BackendService()
 
 @Component

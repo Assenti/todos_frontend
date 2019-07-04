@@ -5,45 +5,49 @@
         </v-card-title>
         <v-card-text class="px-4">
 
-            <v-alert v-model="alert"
-                type="error"
-                class="mx-2" 
-                dismissible
-                transition="scale-transition" 
-                outline>
-                {{ message }}
-            </v-alert>
+            <v-layout>
+                <v-flex xs12 sm6>
+                    <v-alert v-model="alert"
+                        type="error"
+                        class="mx-2" 
+                        dismissible
+                        transition="scale-transition" 
+                        outline>
+                        {{ message }}
+                    </v-alert>
 
-            <v-text-field
-                prepend-inner-icon="lock"
-                v-model="password"
-                :loading="loader"
-                :readonly="correctPassword"
-                @change="checkPassword" 
-                label="Current Password"
-                required>
-                <template v-if="correctPassword" slot="append">
-                    <v-icon color="green">check</v-icon>
-                </template>
-            </v-text-field>
+                    <v-text-field
+                        prepend-inner-icon="lock"
+                        v-model="password"
+                        :loading="loader"
+                        :readonly="correctPassword"
+                        @change="checkPassword" 
+                        label="Current Password"
+                        required>
+                        <template v-if="correctPassword" slot="append">
+                            <v-icon color="green">check</v-icon>
+                        </template>
+                    </v-text-field>
 
-            <v-text-field
-                prepend-inner-icon="lock"
-                v-model="newPassword" 
-                label="New Password" 
-                required/>
+                    <v-text-field
+                        prepend-inner-icon="lock"
+                        v-model="newPassword" 
+                        label="New Password" 
+                        required/>
+                    <v-layout>
+                        <v-spacer/>
+                        <v-btn color="primary" 
+                        flat :loading="loading"
+                        :disabled="!correctPassword" 
+                        @click="change">
+                            <v-icon class="mr-1">save</v-icon>
+                            Save
+                        </v-btn>
+                    </v-layout>
+                </v-flex>
+            </v-layout>
 
         </v-card-text>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="grey" flat @click="close">Close</v-btn>
-            <v-btn color="primary" 
-            flat :loading="loading"
-            :disabled="!correctPassword" 
-            @click="change">Save</v-btn>
-        </v-card-actions>
-
     </v-card>
 </template>
 
@@ -52,7 +56,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
-import BackendService from '@/services/backendService'
+import BackendService from '@/services/backend'
 import { bus } from '@/main'
 import { User } from '../models/User'
 const backendService = new BackendService()

@@ -28,7 +28,7 @@
             <template v-slot:day="{ date }">
                 <v-sheet color="teal" v-if="hasDateTodos(date)">
                     <v-layout justify-center>
-                        <v-menu v-model="date.menu"
+                        <v-menu open-on-hover
                             :close-on-content-click="false"
                             :nudge-width="200"
                             offset-y 

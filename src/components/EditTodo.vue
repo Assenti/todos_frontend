@@ -34,7 +34,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
-import BackendService from '@/services/backendService'
+import BackendService from '@/services/backend'
 import { bus } from '@/main'
 const backendService = new BackendService()
 

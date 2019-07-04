@@ -79,7 +79,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import users from '@/store/modules/users'
-import BackendService from '@/services/backendService'
+import BackendService from '@/services/backend'
 const backendService = new BackendService()
 import { User } from '../models/User'
 import { bus } from '@/main'

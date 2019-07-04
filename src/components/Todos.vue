@@ -222,12 +222,12 @@
               <span>Show All</span>
             </v-tooltip>
           </div>
-          <div>
+          <div class="px-2">
             <span class="body-1 white--text">All Tasks: {{ todos.length }}</span>
             <span class="body-1 white--text mx-2">|</span>
             <span class="body-1 white--text">Remaining: {{ todos.length - todosCompletionScore }}</span>
           </div>
-          <div>
+          <!-- <div>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on="on"
@@ -237,7 +237,7 @@
               </template>
               <span>Delete All Completed</span>
             </v-tooltip>
-          </div>
+          </div> -->
         </v-layout>
       </v-footer>
 
@@ -285,7 +285,7 @@ import { Todo } from '@/models/Todo'
 import EditTodo from '@/components/EditTodo.vue'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
-import BackendService from '@/services/backendService'
+import BackendService from '@/services/backend'
 import { bus } from '@/main'
 const backendService = new BackendService()
 
@@ -329,7 +329,9 @@ export default class Todos extends Vue {
   }
   
   mounted() {
-    if(todos.getTodos.length == 0) this.getTodos() 
+    setTimeout(() => {
+      if(todos.getTodos.length == 0 && users.isLoggedIn) this.getTodos() 
+    }, 1000)
   }
 
   get todosCompletionScore(): number {
@@ -366,27 +368,39 @@ export default class Todos extends Vue {
     
   }
 
-  getTodos() {
+  async getTodos() {
     this.loader = true
-    backendService
-    .fetchTodosList()
-    .then(todos => {
-      console.log(todos)
+    try {
+      const todos = await backendService.fetchTodosList()
       this.todos = todos
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
       this.loader = false
-    })
+    }
   }
 
-  addTodo() {
-    this.loader = true
-    backendService
-    .addTodo(this.todo)
-    .then(todo => {
-      this.loader = false
-      this.todo = ''
-      this.todos.push(todo)
-      todos.setTodos(this.todos as Todo[])
-    })
+  async addTodo() {
+    if(this.todo) {
+      try {
+        this.loader = true
+        const todo = await backendService.addTodo(this.todo)
+        this.todo = ''
+        this.todos.push(todo)
+        todos.setTodos(this.todos as Todo[])
+      }
+      catch (e) {
+        console.log(e)
+      }
+      finally {
+        this.loader = false
+      }
+    }
+    else {
+      bus.$emit('toast', 'Please input a todo')
+    }
   }
 
   editTodo(todo: Todo) {
@@ -395,7 +409,7 @@ export default class Todos extends Vue {
   }
 
   deleteCompleted() {
-    // TODO: implement func
+      
   }
 
   toggleImportance(todo: Todo, index: number) {
@@ -420,17 +434,21 @@ export default class Todos extends Vue {
     })
   }
 
-  deleteTodo(todo: Todo, index: number) {
-    this.loader = true
-    backendService
-    .deleteTodo(todo)
-    .then(() => {
+  async deleteTodo(todo: Todo, index: number) {
+    try {
+      this.loader = true
+      await backendService.deleteTodo(todo)
       let id = this.todos[index].ID
       this.todos = this.todos.filter(todo => {
         return todo.ID != id
       })
+    }
+    catch (e) {
+      console.log(e)
+    }
+    finally {
       this.loader = false
-    })
+    }
   }
 
   openCalendar() {

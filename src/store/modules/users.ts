@@ -1,6 +1,8 @@
 import { VuexModule, Module, getModule, MutationAction } from 'vuex-module-decorators'
 import store from '@/store'
 import { User, UserSubmit } from '@/models/User'
+import { Decoder } from '@/services/decoder'
+const decoder = new Decoder()
 
 @Module({
     namespaced: true,
@@ -49,10 +51,20 @@ class UsersModule extends VuexModule {
 
     @MutationAction
     async login(user_: string) {
-        let decodedString = decode(user_)
-        localStorage.setItem('user', user_)
-        let user = decodedString ? JSON.parse(decodedString) : null
-        return { user } 
+        let decodedString
+        try {
+            decodedString = decoder.decode(JSON.stringify(user_))
+        }
+        catch (e) { 
+            console.log(e)
+        }
+
+        if(decodedString) {
+            localStorage.setItem('user', user_)
+            let user = decodedString ? JSON.parse(decodedString) : null
+            return { user } 
+        }
+        else return { }
     }
 
     @MutationAction
@@ -63,46 +75,16 @@ class UsersModule extends VuexModule {
     
     castToUser(): User | null {
         let encodedString = localStorage.getItem('user')
-        let decodedString = decode(encodedString)
+        let decodedString
+        try {
+            decodedString = encodedString ? decoder.decode(JSON.stringify(encodedString)) : null
+        }
+        catch (e) {
+            console.log(e)
+        }
         let user = decodedString ? JSON.parse(decodedString) : null
         return user ? user as User : null
     }
-}
-
-function decode(input: string | null): string | null {
-    let _keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
-    let output = ''
-    let chr1, chr2, chr3
-    let enc1, enc2, enc3, enc4
-    let i = 0
-    
-    if(input) {
-        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "")
-
-        while (i < input.length) {
-
-            enc1 = _keyStr.indexOf(input.charAt(i++))
-            enc2 = _keyStr.indexOf(input.charAt(i++))
-            enc3 = _keyStr.indexOf(input.charAt(i++))
-            enc4 = _keyStr.indexOf(input.charAt(i++))
-
-            chr1 = (enc1 << 2) | (enc2 >> 4)
-            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2)
-            chr3 = ((enc3 & 3) << 6) | enc4
-
-            output = output + String.fromCharCode(chr1)
-
-            if (enc3 != 64) {
-                output = output + String.fromCharCode(chr2)
-            }
-            if (enc4 != 64) {
-                output = output + String.fromCharCode(chr3);
-            }
-
-        }
-        return output
-    }
-    else return null
 }
 
 export default getModule(UsersModule)

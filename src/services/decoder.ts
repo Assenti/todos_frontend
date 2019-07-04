@@ -1,22 +1,13 @@
-/**
-*
-*  Base64 encode / decode
-*  http://www.webtoolkit.info/
-*
-**/
 
-export const Base64 = {
+export class Decoder {
+	private _keyStr: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+	
+	encode(input: string): string {
+		let output = ''
+		let chr1, chr2, chr3, enc1, enc2, enc3, enc4
+		let i = 0
 
-	// private property
-	_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-	// public method for encoding
-	encode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = Base64._utf8_encode(input);
+		input = this._utf8_encode(input)
 
 		while (i < input.length) {
 
@@ -41,16 +32,14 @@ export const Base64 = {
 
 		}
 
-		return output;
-	},
+		return output
+	}
 
-	// public method for decoding
-	decode : function (input, isWithUtf) {
-		var output = "";
-		var chr1, chr2, chr3;
-		var enc1, enc2, enc3, enc4;
-		var i = 0;
-
+	decode(input:string): string {
+		let output = ''
+		let chr1, chr2, chr3
+		let enc1, enc2, enc3, enc4
+		let i = 0
 		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
 
 		while (i < input.length) {
@@ -74,20 +63,17 @@ export const Base64 = {
 			}
 
 		}
-		if(isWithUtf) {
-			output = Base64._utf8_decode(output);
-		}
-		return output;
-	},
+		output = this._utf8_decode(output)
+		return output
+	}
 
-	// private method for UTF-8 encoding
-	_utf8_encode : function (string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
+	private _utf8_encode(string: string): string {
+		string = string.replace(/\r\n/g,"\n")
+		let utftext = ''
 
-		for (var n = 0; n < string.length; n++) {
+		for (let n = 0; n < string.length; n++) {
 
-			var c = string.charCodeAt(n);
+			let c = string.charCodeAt(n);
 
 			if (c < 128) {
 				utftext += String.fromCharCode(c);
@@ -104,14 +90,15 @@ export const Base64 = {
 
 		}
 
-		return utftext;
-	},
+		return utftext
+	}
 
-	// private method for UTF-8 decoding
-	_utf8_decode : function (utftext) {
-		var string = "";
-		var i = 0;
-		var c = c1 = c2 = 0;
+	private _utf8_decode(utftext: string): string {
+		let string = ''
+		let i = 0
+		let c = 0
+		let c2 = 0
+		let c3 = 0
 
 		while ( i < utftext.length ) {
 
@@ -135,9 +122,6 @@ export const Base64 = {
 
 		}
 
-		return string;
+		return string
 	}
-
 }
-
-module.exports = Base64
