@@ -6,10 +6,7 @@ const backendURL = process.env.NODE_ENV === 'development' ? devUrl : prodUrl
 
 export const api = axios.create({
     baseURL: backendURL,
-    // withCredentials: true,
-    // headers: {
-    //     'Access-Control-Allow-Credentials': true
-    // }
+    withCredentials: true
 })
 
 export function setJWT(jwt: string) {

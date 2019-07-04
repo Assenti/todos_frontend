@@ -93,9 +93,14 @@ class BackendService {
             try {
                 const { data } = await api.get(`api/usertodos?userid=${users.userId}`)
                 let receivedTodos = data.todos 
+                if(receivedTodos.length == 0) {
+                    bus.$emit('toast', 'You todos list is empty')
+                }
+                else {
+                    resolve(receivedTodos as Todo[])
+                    todos.setTodos(receivedTodos as Todo[])
+                }
                 // let dates = response.data.dates  
-                resolve(receivedTodos as Todo[])
-                todos.setTodos(receivedTodos as Todo[])
                 // todos.setTodosDates(dates as Date[])
             }
             catch (e) {
