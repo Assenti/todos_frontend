@@ -1,9 +1,9 @@
 <template>
     <v-layout column align-center>
         <v-card width="400">
-            <v-tabs centered color="teal" dark icons-and-text>
-                <v-tabs-slider color="white"></v-tabs-slider>
-                <v-tab href="#signin">
+            <v-tabs centered color="blue-grey" dark icons-and-text>
+                <v-tabs-slider color="white"/>
+                <v-tab ref="signin" href="#signin">
                     Sign in
                     <v-icon>exit_to_app</v-icon>
                 </v-tab>
@@ -12,10 +12,10 @@
                     <v-icon>person_add</v-icon>
                 </v-tab>
                 <v-tab-item value="signin">
-                <login/>
+                    <login/>
                 </v-tab-item>
                 <v-tab-item value="signup">
-                <register/>
+                    <register/>
                 </v-tab-item>
             </v-tabs>
         </v-card>
@@ -26,6 +26,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Login from '@/components/Login.vue'
 import Register from '@/components/Register.vue'
+import { bus } from '@/main'
 
 @Component({
   components: {
@@ -33,6 +34,6 @@ import Register from '@/components/Register.vue'
   },
 })
 export default class Auth extends Vue {
-  
+
 }
 </script>

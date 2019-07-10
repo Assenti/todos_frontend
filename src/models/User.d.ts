@@ -9,10 +9,18 @@ export interface User {
     avatar: string
 }
 
-export interface UserSubmit {
+export interface Performer {
+    id: number
+    firstname: string
+    lastname: string
     email: string
-    password: string,
-    remember: boolean
+    avatar: string
+}
+
+export interface UserSubmit {
+    Email: string
+    Password: string,
+    Remember: boolean
 }
 
 export interface UserResponse {

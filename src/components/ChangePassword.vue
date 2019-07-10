@@ -1,50 +1,46 @@
 <template>
-    <v-card flat class="pa-2" width="90%">
+    <v-card flat class="pa-2">
         <v-card-title>
             <span class="headline">Change Password</span>
         </v-card-title>
         <v-card-text class="px-4">
 
+            <v-alert v-model="alert"
+                :type="type"
+                dismissible dense
+                border="left"
+                colored-border
+                class="grey lighten-4">
+                {{ message }}
+            </v-alert>
+
+            <v-text-field
+                prepend-inner-icon="lock"
+                v-model="password"
+                :loading="loader"
+                :readonly="correctPassword"
+                @change="checkPassword" 
+                label="Current Password"
+                required>
+                <template v-if="correctPassword" slot="append">
+                    <v-icon color="green">check</v-icon>
+                </template>
+            </v-text-field>
+
+            <v-text-field
+                prepend-inner-icon="lock"
+                v-model="newPassword" 
+                label="New Password" 
+                required/>
             <v-layout>
-                <v-flex xs12 sm6>
-                    <v-alert v-model="alert"
-                        type="error"
-                        class="mx-2" 
-                        dismissible
-                        transition="scale-transition" 
-                        outline>
-                        {{ message }}
-                    </v-alert>
-
-                    <v-text-field
-                        prepend-inner-icon="lock"
-                        v-model="password"
-                        :loading="loader"
-                        :readonly="correctPassword"
-                        @change="checkPassword" 
-                        label="Current Password"
-                        required>
-                        <template v-if="correctPassword" slot="append">
-                            <v-icon color="green">check</v-icon>
-                        </template>
-                    </v-text-field>
-
-                    <v-text-field
-                        prepend-inner-icon="lock"
-                        v-model="newPassword" 
-                        label="New Password" 
-                        required/>
-                    <v-layout>
-                        <v-spacer/>
-                        <v-btn color="primary" 
-                        flat :loading="loading"
-                        :disabled="!correctPassword" 
-                        @click="change">
-                            <v-icon class="mr-1">save</v-icon>
-                            Save
-                        </v-btn>
-                    </v-layout>
-                </v-flex>
+                <v-spacer/>
+                <v-btn color="blue-grey" 
+                text :loading="loading"
+                :disabled="!correctPassword" 
+                @click="change">
+                    Save
+                    <v-icon class="ml-1" small>save</v-icon>
+                </v-btn>
             </v-layout>
 
         </v-card-text>
@@ -69,53 +65,59 @@ const backendService = new BackendService()
 export default class ChangePassword extends Vue {
     alert: boolean = false
     message: string = ''
+    type: string = 'success'
     loader: boolean = false
     loading: boolean = false
     password: string = ''
     newPassword: string = ''
     correctPassword: boolean = false
 
-    created() {
-        bus.$on('notify', (message: string) => {
-            this.alert = true
-            this.message = message
-            setTimeout(() => {
-                this.alert = false
-                this.message = ''
-            }, 3000)
-        })
-    }
-  
-    mounted() {
-    }
-
-    checkPassword() {
+    async checkPassword() {
         this.loader = true
         let data = {
             id: users.userId,
             email: users.userEmail,
             password: this.password
         }
-        backendService
-        .passwordCheck(data as User)
-        .then(() => {
-            this.loader = false
+        try {
+            await backendService.passwordCheck(data as User)
             this.correctPassword = true
-        })
+            this.alert = true
+            this.type = 'success'
+            this.message = 'Password successfully checked'
+        }
+        catch (e) {
+            this.correctPassword = false
+            this.alert = true
+            this.type = 'error'
+            this.message = e
+        }
+        finally {
+            this.loader = false
+        }
     }
 
-    change() {
+    async change() {
         this.loading = true
         let data = {
             id: users.userId,
             email: users.userEmail,
             password: this.newPassword
         }
-        backendService
-        .passwordChange(data as User)
-        .then(() => {
+        try {
+            await backendService.passwordChange(data as User)
+            this.alert = true
+            this.type = 'success'
+            this.message = 'New password was generated! Check your Email, please'
+        }
+        catch (e) {
+            this.alert = true
+            this.type = 'error'
+            this.message = e
+        }
+        finally {
             this.loading = false
-        })
+        }
     }
 
     close() {

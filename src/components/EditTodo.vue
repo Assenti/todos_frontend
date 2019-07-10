@@ -1,18 +1,22 @@
 <template>
     <v-card>
-        <v-card-title>
-            <v-icon color="teal" left>edit</v-icon>
-            <div class="title teal--text">Edit todo</div>
+        <v-card-title class="subheading">
+            <v-icon small left>edit</v-icon>
+            Edit todo
         </v-card-title>
+        
         <v-card-text>
             <v-textarea
-                v-model="value"
-                rows="2" color="teal"
-                prepend-inner-icon="assignment"
+                v-model="todo.value"
+                rows="1"
                 clerable auto-grow
-                required label="Todo"
-                :rules="[v => !!v || 'This field is required']"
-                @keyup.enter="updateTodo"/>
+                required label="Current todo"
+                :rules="[v => !!v || 'Required']"
+                @keyup.enter="updateTodo">
+                <template slot="prepend-inner">
+                    <v-icon small>assignment</v-icon>
+                </template>
+            </v-textarea>
         </v-card-text>
 
         <v-card-actions class="py-4">
@@ -21,16 +25,16 @@
                 color="primary"
                 :autofocus="true"
                 :loading="loader"
-                :disabled="!value" 
+                :disabled="!todo.value" 
                 @click="updateTodo">
                 <v-icon small class="mr-1">save</v-icon>
-                Save Changes</v-btn>
+                save</v-btn>
         </v-card-actions>
     </v-card>   
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
@@ -40,29 +44,23 @@ const backendService = new BackendService()
 
 @Component
 export default class EditTodo extends Vue {
-  value: string = ''
-  todo: undefined | Todo
   loader: boolean = false
   todos: Todo[] = todos.getTodos
 
-  created() {
-    bus.$on('editTodo', (todo: Todo) => {
-      this.todo = todo
-      this.value = todo.Value
-    })
-  }
+  @Prop({type: Object as () => Todo})
+  public todo!: Todo
 
   updateTodo() {
     this.loader = true
-    let id = this.todo ? this.todo.ID : undefined
+    let id = this.todo ? this.todo.id : undefined
     backendService
-    .updateTodo(this.value, id)
+    .updateTodo(this.todo.value, id)
     .then(todo => {
       this.loader = false
       this.todo = todo
       
       for(let todo of this.todos) {
-        if(todo.ID == this.todo.ID) {
+        if(todo.id == this.todo.id) {
             todo = this.todo
         }
       }
@@ -73,7 +71,3 @@ export default class EditTodo extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-
-</style>

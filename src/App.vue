@@ -1,31 +1,33 @@
 <template>
   <v-app>
+    <div class="backdrop"></div>
     <navbar/>
+    <drawer/>
     <v-content>
       <component :is="current"/>
     </v-content>
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { bus } from '@/main'
 import Navbar from '@/components/Navbar.vue'
 import Home from '@/views/Home.vue'
 import Account from '@/components/Account.vue'
+import Drawer from '@/components/Drawer.vue'
 
 @Component({
   components: {
-    Navbar, Home, Account
+    Navbar, Home, Account, Drawer
   }
 })
 export default class App extends Vue {
-  current = 'Home'
+  current: string = 'Home'
 
   created() {
-    bus.$on('switchView', (view) => this.current = view)
+    bus.$on('switchView', (view: string) => this.current = view)
   }
-
 }
 </script>
 
@@ -46,7 +48,22 @@ export default class App extends Vue {
 }
 
 #app {
-  background-color: white;
+  background-image: url('./assets/austin-distel-rxpThOwuVgE-unsplash.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
 }
 
+.backdrop {
+  background-color: rgba(255, 255, 255, .6);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+}
+
+.no-select {
+  user-select: none;
+}
 </style>

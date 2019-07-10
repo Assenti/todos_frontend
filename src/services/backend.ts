@@ -1,25 +1,11 @@
 import { api, setJWT } from '../store/api'
 import { User, UserSubmit } from '@/models/User'
-import { Todo } from '@/models/Todo'
+import { Todo, Detail } from '@/models/Todo'
 import { bus } from '@/main'
 import users from '../store/modules/users'
 import todos from '../store/modules/todos'
 
 class BackendService {
-    register(user: User) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                await api.post('api/users', user)
-                bus.$emit('notify', 'Congratulations! You are successfully registered!')
-                resolve()    
-            }
-            catch (e) {
-                reject(e)
-                bus.$emit('notify', 'Error occured while registering')
-            }
-        })
-    }
-
     signin(user: UserSubmit) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -57,32 +43,30 @@ class BackendService {
     }
 
     passwordChange(user: User) {
-        return new Promise(resolve => {
-            api.post(`api/changepassword`, user)
-            .then(response => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await api.post(`api/changepassword`, user)
                 resolve()
-                bus.$emit('notify', 'New password was generated! Check your Email, please')
-            })
-            .catch(err => {
-                console.log(err)
-                bus.$emit('notify', err.response.data.message ? err.response.data.message : err.message)
-                resolve()
-            })
+            }
+            catch (e) {
+                console.log(e)
+                let msg = e.response.data.message ? e.response.data.message : e.message
+                reject(msg)
+            }
         })
     }
 
     passwordCheck(user: User) {
-        return new Promise(resolve => {
-            api.post('api/checkpassword', user)
-            .then(response => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await api.post('api/checkpassword', user)
                 resolve()
-                bus.$emit('notify', 'Password successfully checked')
-            })
-            .catch(err => {
-                console.log(err)
-                bus.$emit('notify', err.response.data.message ? err.response.data.message : err.message)
-                resolve()
-            })
+            }
+            catch (e) {
+                console.log(e)
+                let msg = e.response.data.message ? e.response.data.message : e.message
+                reject(msg)
+            }
         })
     }
 
@@ -94,6 +78,7 @@ class BackendService {
                 const { data } = await api.get(`api/usertodos?userid=${users.userId}`)
                 let receivedTodos = data.todos 
                 if(receivedTodos.length == 0) {
+                    resolve([])
                     bus.$emit('toast', 'You todos list is empty')
                 }
                 else {
@@ -123,7 +108,7 @@ class BackendService {
             }
             catch (e) {
                 reject(e)
-                bus.$emit('toast', 'Error ocurred while sending new todo')
+                bus.$emit('toast', 'Error ocurred while creating new todo')
             }
         })
     }
@@ -148,7 +133,7 @@ class BackendService {
                 .catch(err => {
                     console.log(err)
                     resolve()
-                    bus.$emit('toast', 'Error ocurred while sending new todo')
+                    bus.$emit('toast', 'Error ocurred while updating todo')
                 })
             }
         })
@@ -156,7 +141,7 @@ class BackendService {
 
     toggleImportance(todo: Todo): Promise<Todo> {
         return new Promise(resolve => {
-            api.get(`api/todoimportance?id=${todo.ID}`)
+            api.get(`api/todoimportance?id=${todo.id}`)
             .then(response => {
                 resolve(response.data.todo as Todo)
             })
@@ -170,7 +155,7 @@ class BackendService {
 
     toggleCompletion(todo: Todo): Promise<Todo> {
         return new Promise(resolve => {
-            api.get(`api/todocompletion?id=${todo.ID}`)
+            api.get(`api/todocompletion?id=${todo.id}`)
             .then(response => {
                 resolve(response.data.todo as Todo)
             })
@@ -185,7 +170,7 @@ class BackendService {
     deleteTodo(todo: Todo) {
         return new Promise(async (resolve, reject) => {
             try {
-                await api.delete(`api/todos?id=${todo.ID}`)
+                await api.delete(`api/todos?id=${todo.id}`)
                 resolve('success')
             }
             catch (e) {

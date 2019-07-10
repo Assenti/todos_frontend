@@ -1,12 +1,12 @@
 <template>
     <v-layout column align-center>
-        <h1 class="display-1 teal--text text-xs-center">
+        <h1 class="display-1 blue-grey--text text-xs-center no-select">
             Personal Planner
             <small class="caption">ver. 2.0</small>
         </h1>
         <v-divider/>
         <v-layout align-center>
-            <div class="caption grey--text text-xs-center">
+            <div class="caption blue-grey--text text-xs-center">
             Web application by</div>
             <v-tooltip top>
                 <template v-slot:activator="{ on }">

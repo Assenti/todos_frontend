@@ -30,6 +30,14 @@ class UsersModule extends VuexModule {
         return this.user ? this.user.avatar : null
     }
 
+    get userFirstname(): string | null {
+        return this.user ? this.user.firstname : null
+    }
+
+    get userLastname(): string | null {
+        return this.user ? this.user.lastname : null
+    }
+
     get username() {
         return this.user ? `${this.user.firstname} ${this.user.lastname}` : null
     }

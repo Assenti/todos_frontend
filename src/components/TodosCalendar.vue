@@ -1,17 +1,17 @@
 <template>
     <div>
-        <v-toolbar dense dark flat color="teal">
+        <v-toolbar dense dark flat color="blue-grey">
             <v-toolbar-title>
-                Todo Calendar                
+                Todos Calendar                
             </v-toolbar-title>
             <v-spacer/>
             <div>
                 <v-tooltip top>
                     <template v-slot:activator="{ on }">
                     <v-btn flat icon dark
-                        v-on="on"
+                        v-on="on" small
                         @click="hideCalendar">
-                        <v-icon>close</v-icon>
+                        <v-icon small>close</v-icon>
                     </v-btn>
                     </template>
                     <span>Hide Calendar</span>
@@ -24,7 +24,7 @@
             type="month"
             :start="new Date().toISOString().substr(0, 10)"
             :now="new Date().toISOString().substr(0, 10)"
-            color="teal">
+            color="primary">
             <template v-slot:day="{ date }">
                 <v-sheet color="teal" v-if="hasDateTodos(date)">
                     <v-layout justify-center>
@@ -47,7 +47,7 @@
                                         v-for="(todo, i) in returnTodosOfDate(date)" 
                                         :key="i">
                                         <v-list-tile-content>
-                                            <v-list-tile-title>{{ i + 1}}) {{ todo.Value }}</v-list-tile-title>
+                                            <v-list-tile-title>{{ i + 1}}) {{ todo.value }}</v-list-tile-title>
                                         </v-list-tile-content>
                                     </v-list-tile>
                                 </v-list>
@@ -59,7 +59,7 @@
         </v-calendar>
         <v-footer height="auto"
             class="px-2" dark
-            color="teal">
+            color="blue-grey">
             <v-layout align-center justify-space-between>
                 <v-btn small flat @click="$refs.calendar.prev()">
                     <v-icon>keyboard_arrow_left</v-icon>
@@ -97,7 +97,7 @@ export default class TodosCalendar extends Vue {
 
     hasDateTodos(date: string): boolean {
         for(const todo of this.todos) {
-            if(new Date(todo.CreatedAt).toDateString() === new Date(date).toDateString()) {
+            if(new Date(todo.createdAt).toDateString() === new Date(date).toDateString()) {
                 return true
             }
         }
@@ -105,11 +105,9 @@ export default class TodosCalendar extends Vue {
     }
 
     returnTodosOfDate(date: string): Todo[] {
-            console.log(date)
-
         let existTodos: Todo[] = []
         for(const todo of this.todos) {
-            if(new Date(todo.CreatedAt).toDateString() === new Date(date).toDateString()) {
+            if(new Date(todo.createdAt).toDateString() === new Date(date).toDateString()) {
                 existTodos.push(todo)
             }
         }

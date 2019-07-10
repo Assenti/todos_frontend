@@ -1,38 +1,37 @@
 <template>
     <div class="pa-4">
         <v-layout class="mb-4" justify-center>
-            <div class="text-xs-center headline teal--text">Sign up</div>
+            <div class="text-xs-center headline">Sign up</div>
         </v-layout>
         <v-form @submit.prevent="submit">
 
             <v-alert v-model="alert"
-                dismissible
-                type="error"
-                transition="scale-transition" 
+                dismissible dense
+                :type="status"
                 outline>
                 {{ message }}
             </v-alert>
 
             <v-text-field 
-                prepend-inner-icon="person"
+                prepend-icon="person"
                 v-model="firstname"
-                label="Firstname"
+                label="First name"
                 v-validate="'required'"
                 data-vv-name="Firstname"
                 :error-messages="errors.collect('Firstname')"
                 required/>
 
             <v-text-field
-                prepend-inner-icon="person"
+                prepend-icon="person"
                 v-model="lastname"
                 v-validate="'required'"
                 data-vv-name="Lastname"
                 :error-messages="errors.collect('Lastname')"
-                label="Lastname"
+                label="Last name"
                 required/>
 
             <v-text-field
-                prepend-inner-icon="email"
+                prepend-icon="email"
                 v-model="email"
                 v-validate="'required|email'"
                 data-vv-name="Email"
@@ -41,7 +40,7 @@
                 required/>
 
             <v-text-field
-                prepend-inner-icon="lock"
+                prepend-icon="lock"
                 v-model="prePassword"
                 v-validate="'required'"
                 data-vv-name="PrePassword"
@@ -51,7 +50,7 @@
                 required/>
             
             <v-text-field
-                prepend-inner-icon="lock"
+                prepend-icon="lock"
                 v-model="password"
                 v-validate="'required'"
                 data-vv-name="Password"
@@ -61,14 +60,12 @@
                 required/>
             
             <v-layout class="py-3">
-                <v-spacer></v-spacer>
-                <v-btn flat 
-                    color="teal"
+                <v-spacer/>
+                <v-btn dark color="blue-grey"
                     :loading="loading"
-                    type="submit" 
-                    @click="submit">
-                    <v-icon small class="mr-1">person_add</v-icon>
+                    type="submit">
                     Register
+                    <v-icon small class="ml-1">person_add</v-icon>
                 </v-btn>
             </v-layout>
                 
@@ -79,10 +76,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import users from '@/store/modules/users'
-import BackendService from '@/services/backend'
-const backendService = new BackendService()
 import { User } from '../models/User'
 import { bus } from '@/main'
+import { api } from '@/store/api'
 
 @Component
 export default class Register extends Vue {
@@ -92,26 +88,18 @@ export default class Register extends Vue {
     password: string = ''
     prePassword: string = ''
     message: string = ''
+    status: string | undefined = 'error'
     alert: boolean = false
     loading: boolean = false
-
-    created() {
-        bus.$on('notify', (message: string) => {
-            this.message = message
-            this.alert = true
-            setTimeout(() => {
-                this.alert = false
-                this.message = ''
-            }, 3000)
-        })
-    }
 
     comparePassword(): boolean {
         if(this.password !== this.prePassword) {
             this.alert = true
+            this.status = 'error'
             this.message = `Password doesn't same`
             setTimeout(() => {
                 this.alert = false
+                this.status = ''
                 this.message = ''
             }, 3000)
             return false
@@ -127,21 +115,17 @@ export default class Register extends Vue {
         .then(result => {
             if(result) {
                 if(this.comparePassword()) {
-                    this.loading = true
                     this.signUp()
                 } 
                 return
             }
             this.alert = true
+            this.status = 'error'
             this.message = 'Fill all required fields, please'
-            setTimeout(() => {
-                this.alert = false
-                this.message = ''
-            }, 3000)
         })
     }
 
-    signUp() {
+    async signUp() {
         let newUser = {
             firstname: this.firstname,
             lastname: this.lastname,
@@ -149,10 +133,31 @@ export default class Register extends Vue {
             password: this.password
         }
 
-        backendService
-        .register(newUser as User)
-        .then(() => this.loading = false)  
-        .catch(err => console.log(err))
+        try {
+            this.loading = true
+            await api.post('api/users', newUser)
+            this.alert = true
+            this.status = 'success'
+            this.message = 'Congratulations! You are successfully registered!'
+            this.clearForm()
+        }
+        catch (e) {
+            console.log(e)
+            this.alert = true
+            this.status = 'error'
+            this.message = 'Error occured while registering'
+        }
+        finally {
+            this.loading = false
+        } 
+    }
+
+    clearForm() {
+        this.firstname = ''
+        this.lastname = ''
+        this.email = ''
+        this.password = ''
+        this.prePassword = ''
     }
 }
 

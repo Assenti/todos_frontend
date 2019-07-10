@@ -38,7 +38,6 @@ export default class AccountInfo extends Vue {
     userName: string | null = users.username
     userEmail: string | null = users.userEmail
     userRegisteredDate: string | null = users.registeredDate
-
     items: object[] = [
         {
             title: users.username,
@@ -51,7 +50,7 @@ export default class AccountInfo extends Vue {
             icon: 'email'
         },
         {
-            title: this.userRegisteredDate,
+            title: this.userRegisteredDateHandler,
             desc: 'User registered date',
             icon: 'event'
         },
@@ -61,6 +60,13 @@ export default class AccountInfo extends Vue {
         //     icon: 'cake'
         // }
     ]
+
+    get userRegisteredDateHandler(): string | null {
+        if(this.userRegisteredDate) {
+            return new Date(this.userRegisteredDate).toISOString().substr(0, 10)
+        }
+        else return null
+    }
 }
 </script>
 

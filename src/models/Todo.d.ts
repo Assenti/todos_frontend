@@ -1,16 +1,26 @@
 import { User } from '@/models/User'
 
 export interface Todo {
-    ID: number
-    Value: string
-    Completed: boolean
-    Important: boolean
-    UserID: number
-    CreatedAt: string
-    UpdatedAt: string 
-    Menu: boolean
+    id: number
+    value: string
+    completed: boolean
+    important: boolean
+    userId: number
+    createdAt: string
+    updatedAt: string
+    completeDate: string
+    status: string
+    performer: number
+    firstname: string
+    lastname: string  
 }
 
 export interface TodosResponse {
     todos?: Todo[]
+}
+
+export interface Detail {
+    id: number      
+	todoId: number
+	content: string
 }
