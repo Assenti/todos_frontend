@@ -1,6 +1,6 @@
 # Personal Planner ver. 2.0 web app frontend part on Vue.js (written on TypeScript)
 
-> Used technologies: Vue.js, Vuetify
+> Used Stack: TypeScript, Vue.js, Vuetify
 
 ## Project setup
 ```
