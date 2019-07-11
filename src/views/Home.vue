@@ -4,12 +4,12 @@
             align-center
             justify-space-around>
 
-            <v-flex class="pr-2" xs12 sm12 md6>
+            <v-flex class="px-1" xs12 sm12 md6>
                 <component class="animated bounceInLeft fast" 
                     :is="current" :chosenTodo="chosenTodo"/>
             </v-flex>
 
-            <v-flex xs12 sm12 md6 class="pl-2">
+            <v-flex xs12 sm12 md6 class="px-1">
                 <auth v-if="!loggedIn"/>
                 <todos v-else/>
             </v-flex>

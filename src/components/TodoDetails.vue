@@ -19,7 +19,54 @@
         </v-toolbar>
       
         <div class="this-todos-list">
-            <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+            <div class="this-editor">
+                <div class="this-editor-toolbar">
+                    <v-btn-toggle v-model="alignment">
+                        <v-btn flat>
+                            <v-icon>format_align_left</v-icon>
+                        </v-btn>
+                        <v-btn flat>
+                            <v-icon>format_align_center</v-icon>
+                        </v-btn>
+                        <v-btn flat>
+                            <v-icon>format_align_right</v-icon>
+                        </v-btn>
+                        <v-btn flat>
+                            <v-icon>format_align_justify</v-icon>
+                        </v-btn>
+                    </v-btn-toggle>
+
+                    <v-divider vertical class="mx-2"/>
+
+                    <v-btn-toggle v-model="fontStyles" multiple>
+                        <v-btn flat>
+                            <v-icon>format_bold</v-icon>
+                        </v-btn>
+                        <v-btn flat>
+                            <v-icon>format_italic</v-icon>
+                        </v-btn>
+                        <v-btn flat>
+                            <v-icon>format_underlined</v-icon>
+                        </v-btn>
+                    </v-btn-toggle>
+
+                    <v-divider vertical class="mx-2"/>
+
+                    <v-btn-toggle v-model="listType">
+                        <v-btn flat>
+                            <v-icon>format_list_bulleted</v-icon>
+                        </v-btn>
+                        <v-btn flat>
+                            <v-icon>format_list_numbered</v-icon>
+                        </v-btn>
+                    </v-btn-toggle>
+
+                </div>
+                <textarea type="text"
+                    placeholder="Write your staff here..." 
+                    v-model="editorData" />
+                    
+            </div>
             <v-layout>
                 <v-spacer/>
                 <v-btn flat color="primary"
@@ -47,7 +94,6 @@ import todos from '@/store/modules/todos'
 import BackendService from '@/services/backend'
 import { api } from '@/store/api'
 import { bus } from '@/main'
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 const backendService = new BackendService()
 
 @Component({
@@ -59,15 +105,12 @@ export default class TodoDetails extends Vue {
     todo: string = ''
     dialog: boolean = false
     loader: boolean = false
-    editor?: any = ClassicEditor
     editorData: string = ''
     details?: Detail
-    editorConfig: object = {
-        toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo',  '|', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
-        alignment: {
-            options: [ 'left', 'right' ]
-        }
-    }
+    alignment: number = 0
+    listType: number | null = null
+    fontStyles: number[] = []
+    
 
     @Prop({type: Object as () => Todo})
     public chosenTodo!: Todo
@@ -183,5 +226,29 @@ export default class TodoDetails extends Vue {
     outline: 1px solid #607D8B !important;
     box-shadow: 1px 2px 8px rgba(0, 0, 0, .3);
   }
+}
+
+.this-editor {
+    min-height: 400px;
+
+    & > textarea {
+        min-height: 355px;
+        width: 100%;
+        outline: none;
+        padding: 10px;
+
+        &::placeholder {
+            color: #909090;
+        }
+    }
+}
+
+.this-editor-toolbar {
+    height: 45px;
+    display: flex;
+    align-items: center;
+    // background-color: #f7f7f7;
+    border-bottom: 1px solid grey;
+    padding: 0 10px;
 }
 </style>
