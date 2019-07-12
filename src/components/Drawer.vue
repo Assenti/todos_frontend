@@ -4,21 +4,14 @@
       absolute bottom
       temporary>
         <v-toolbar flat color="blue-grey" dark>
-            <v-list>
-                <v-list-tile>
-                    <v-list-tile-title class="title">
-                        <v-layout align-center
-                            style="height:100%" 
-                            justify-space-between>
-                            Personal Planner
-                            <v-btn title="Close" small
-                                @click="drawer = false" icon text>
-                                <v-icon>chevron_left</v-icon>
-                            </v-btn>
-                        </v-layout>
-                    </v-list-tile-title>
-                </v-list-tile>
-            </v-list>
+            <v-layout align-center
+                justify-space-between>
+                <div class="title">Personal Planner</div>
+                <v-btn title="Close"
+                    @click="drawer = false" icon flat>
+                    <v-icon>chevron_left</v-icon>
+                </v-btn>
+            </v-layout>
         </v-toolbar>
 
         <v-divider/>
@@ -42,15 +35,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { bus } from '@/main'
 import { ListItem } from '@/models/ListItem'
 import users from '@/store/modules/users'
 
-@Component({
-  components: {
-  }
-})
+@Component({})
 export default class Drawer extends Vue {
     drawer: boolean = false
     group: undefined = undefined
@@ -63,7 +53,7 @@ export default class Drawer extends Vue {
             available: this.loggedIn
         },
         { 
-            title: 'Change Password', 
+            title: 'Change password', 
             icon: 'lock', 
             function: this.openChangePassword,
             available: this.loggedIn 
@@ -75,36 +65,56 @@ export default class Drawer extends Vue {
             available: this.loggedIn 
         },
         { 
-            title: 'Logout', 
+            title: 'Create project/group', 
+            icon: 'group', 
+            function: this.openGroups,
+            available: this.loggedIn 
+        },
+        { 
+            title: 'Log out', 
             icon: 'exit_to_app', 
             function: this.logout,
             available: this.loggedIn 
         }
     ]
 
-  created() {
-    bus.$on('openDrawer', () => this.drawer = true)
-    bus.$on('closeDrawer', () => this.drawer = false)
-    bus.$on('loggedOut', () => this.loggedIn = false)
-    bus.$on('loggedIn', () => this.loggedIn = true)
-  }
+    @Watch('drawer')
+    onDrawerChanged(v: boolean) {
+        if(v == true) bus.$emit('drawerTrue')
+        else if(v == false) bus.$emit('drawerFalse')
+    }
 
-  openAccount() {
-      bus.$emit('openAccountInfo')
-  }
+    mounted() {
+        this.loggedIn = true
+    }
 
-  openChangePassword() {
-      bus.$emit('openPasswordModal')      
-  }
+    created() {
+        bus.$on('openDrawer', () => this.drawer = true)
+        bus.$on('closeDrawer', () => this.drawer = false)
+        bus.$on('loggedOut', () => this.loggedIn = false)
+        bus.$on('loggedIn', () => this.loggedIn = true)
+    }
 
-  openInvitation() {
-      bus.$emit('openInvitation')      
-  }
+    openAccount() {
+        bus.$emit('openAccountInfo')
+    }
 
-  logout() {
-      this.drawer = false
-      bus.$emit('loggedOut')
-  }
+    openChangePassword() {
+        bus.$emit('openPasswordModal')      
+    }
 
+    openInvitation() {
+        bus.$emit('openInvitation')      
+    }
+
+    openGroups() {
+        bus.$emit('openGroups')      
+    }
+
+    logout() {
+        this.drawer = false
+        users.logout()
+        bus.$emit('loggedOut')
+    }
 }
 </script>

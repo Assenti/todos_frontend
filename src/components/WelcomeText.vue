@@ -1,5 +1,5 @@
 <template>
-    <v-layout column align-center>
+    <v-layout column align-center class="this-welcome">
         <h1 class="display-1 blue-grey--text text-xs-center no-select">
             Personal Planner
             <small class="caption">ver. 2.0</small>
@@ -32,4 +32,12 @@ export default class WelcomeText extends Vue {
 
 }
 </script>
+
+<style lang="scss">
+@media (max-width: 400px) {
+    .this-welcome {
+        display: none;
+    }
+}
+</style>
 

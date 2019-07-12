@@ -27,6 +27,10 @@
             <invitation/>
         </v-dialog>
 
+        <v-dialog v-model="groupsModal" max-width="400px">
+            <groups/>
+        </v-dialog>
+
         <v-snackbar top right
             v-model="snackbar"
             :timeout="3000">
@@ -48,6 +52,7 @@ import WelcomeText from '@/components/WelcomeText.vue'
 import TodosCalendar from '@/components/TodosCalendar.vue'
 import TodoDetails from '@/components/TodoDetails.vue'
 import Invitation from '@/components/Invitation.vue'
+import Groups from '@/components/Groups.vue'
 import Todos from '@/components/Todos.vue'
 import users from '@/store/modules/users'
 import { Todo } from '@/models/Todo'
@@ -62,7 +67,8 @@ import { bus } from '@/main'
     AccountInfo, 
     ChangePassword, 
     TodoDetails,
-    Invitation
+    Invitation,
+    Groups
   },
 })
 export default class Home extends Vue {
@@ -70,6 +76,7 @@ export default class Home extends Vue {
     accountModal: boolean = false
     passwordModal: boolean = false
     invitationModal: boolean = false
+    groupsModal: boolean = false
     snackbar: boolean = false
     notify: string = ''
     current: string = 'WelcomeText'
@@ -77,8 +84,8 @@ export default class Home extends Vue {
         id: 0,
         userId: 0,
         value: '',
-        important: false,
-        completed: false,
+        important: 0,
+        completed: 0,
         createdAt: '',
         updatedAt: '',
         completeDate: '',
@@ -107,6 +114,7 @@ export default class Home extends Vue {
         })
         bus.$on('closeTodoDetails', () => this.current = 'WelcomeText')
         bus.$on('openInvitation', () => this.invitationModal = true)
+        bus.$on('openGroups', () => this.groupsModal = true)
     }
 }
 </script>

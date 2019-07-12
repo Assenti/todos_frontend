@@ -3,8 +3,8 @@ import { User } from '@/models/User'
 export interface Todo {
     id: number
     value: string
-    completed: boolean
-    important: boolean
+    completed: number
+    important: number
     userId: number
     createdAt: string
     updatedAt: string

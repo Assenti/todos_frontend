@@ -229,10 +229,10 @@ export default class TodoDetails extends Vue {
 }
 
 .this-editor {
-    min-height: 400px;
+    min-height: 390px;
 
     & > textarea {
-        min-height: 355px;
+        min-height: 339px;
         width: 100%;
         outline: none;
         padding: 10px;
@@ -244,7 +244,7 @@ export default class TodoDetails extends Vue {
 }
 
 .this-editor-toolbar {
-    height: 45px;
+    height: 48px;
     display: flex;
     align-items: center;
     // background-color: #f7f7f7;

@@ -1,7 +1,7 @@
 <template>
     <v-card>
-        <v-card-title class="subheading">
-            <v-icon small left>email</v-icon>
+        <v-card-title class="blue-grey white--text subheading">
+            <v-icon small left color="white">email</v-icon>
             Send todos via email
         </v-card-title>
         <v-card-text>

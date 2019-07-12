@@ -2,9 +2,9 @@
     <div>
         <v-toolbar app flat
             color="transparent">
-            <v-toolbar-side-icon @click="menu = !menu"/>
+            <v-toolbar-side-icon v-if="loggedIn" @click="menu = !menu"/>
 
-            <v-toolbar-title class="headline ml-2">
+            <v-toolbar-title class="headline ml-2 no-select">
                 <span class="font-weight-bold">
                     Personal Planner
                     <small class="caption">ver. 2.0</small>
@@ -53,6 +53,9 @@ export default class Navbar extends Vue {
 
     created() {
         bus.$on('loggedIn', () => this.loggedIn = true)
+        bus.$on('loggedOut', () => this.loggedIn = false)
+        bus.$on('drawerTrue', () => this.menu = true)
+        bus.$on('drawerFalse', () => this.menu = false)
     }
 
     logout() {
@@ -72,8 +75,8 @@ export default class Navbar extends Vue {
 
     @Watch('menu')
     onMenuChanged(v: boolean) {
-        if(v) bus.$emit('openDrawer')
-        else if(!v) bus.$emit('closeDrawer')
+        if(v == true) bus.$emit('openDrawer')
+        else if(v == false) bus.$emit('closeDrawer')
     }
 }
 </script>

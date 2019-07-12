@@ -1,9 +1,10 @@
 <template>
     <v-card>
-        <v-card-title class="subheading">
-            <v-icon small left>person_add</v-icon>
+        <v-card-title class="subheading blue-grey white--text">
+            <v-icon small left color="white">person_add</v-icon>
             Invite your friend
         </v-card-title>
+
         <v-card-text>
             
             <v-text-field v-model="receiver"

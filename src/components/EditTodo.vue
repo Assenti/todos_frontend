@@ -1,7 +1,7 @@
 <template>
     <v-card>
-        <v-card-title class="subheading">
-            <v-icon small left>edit</v-icon>
+        <v-card-title class="blue-grey white--text subheading">
+            <v-icon small left color="white">edit</v-icon>
             Edit todo
         </v-card-title>
         

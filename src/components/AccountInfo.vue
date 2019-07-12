@@ -1,9 +1,12 @@
 <template>
-    <v-card flat class="pa-2">
-        <v-card-title>
-            <span class="headline">User Profile</span>
+    <v-card flat>
+
+        <v-card-title class="subheading blue-grey white--text">
+            <v-icon small left color="white">person</v-icon>
+            User Profile
         </v-card-title>
-        <v-card-text class="px-4">
+
+        <v-card-text class="px-3">
             <v-list avatar two-line>
                 <v-list-tile v-for="(item, index) in items" :key="index">
                     <v-list-tile-avatar>

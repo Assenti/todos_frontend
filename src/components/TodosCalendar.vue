@@ -38,18 +38,21 @@
                             </template>
 
                             <v-card>
-                                <div class="pt-2 px-3 font-weight-bold">
+                                <div class="blue-grey white--text py-2 px-3">
                                     Todo list for {{ new Date(date).toISOString().substr(0, 10) }}:
                                 </div>
                                 <v-divider/>
-                                <v-list dense>
-                                    <v-list-tile
-                                        v-for="(todo, i) in returnTodosOfDate(date)" 
-                                        :key="i">
-                                        <v-list-tile-content>
-                                            <v-list-tile-title>{{ i + 1}}) {{ todo.value }}</v-list-tile-title>
-                                        </v-list-tile-content>
-                                    </v-list-tile>
+                                <v-list dense class="py-0">
+                                    <template v-for="(todo, i) in returnTodosOfDate(date)">
+                                        <v-list-tile
+                                            @click="voidFunc"
+                                            :key="`date-todo-${i}`">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>{{ i + 1}}) {{ todo.value }}</v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-divider :key="i"/>
+                                    </template>
                                 </v-list>
                             </v-card>
                         </v-menu>
@@ -118,6 +121,7 @@ export default class TodosCalendar extends Vue {
         bus.$emit('hideCalendar')
     }
 
+    voidFunc() {}
 }
 </script>
 

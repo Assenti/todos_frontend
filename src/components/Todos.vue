@@ -3,37 +3,48 @@
         
         <v-toolbar dense dark flat color="blue-grey">
             <v-toolbar-title>
-            <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on" flat
-                    @click="openCalendar">
-                    <v-icon small>date_range</v-icon>
-                </v-btn>
-                </template>
-                <span>Open a todo calendar</span>
-            </v-tooltip>
+                <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" flat
+                        @click="openCalendar">
+                        <v-icon small>date_range</v-icon>
+                    </v-btn>
+                    </template>
+                    <span>Open a todo calendar</span>
+                </v-tooltip>
             </v-toolbar-title>
 
             <v-spacer/>
+            
+            <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" flat
+                        v-if="groups.length > 0"
+                        @click="openGroups">
+                    <v-icon small>group</v-icon>
+                    </v-btn>
+                </template>
+                <span>Your groups/projects or where are you participate</span>
+            </v-tooltip>
 
             <v-tooltip top>
-            <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on" flat
-                @click="searchMenu = !searchMenu">
-                <v-icon small>search</v-icon>
-                </v-btn>
-            </template>
-            <span>Search todo</span>
+                <template v-slot:activator="{ on }">
+                    <v-btn icon v-on="on" flat
+                    @click="searchMenu = !searchMenu">
+                    <v-icon small>search</v-icon>
+                    </v-btn>
+                </template>
+                <span>Search todo</span>
             </v-tooltip>
 
             <v-tooltip top>
             <template v-slot:activator="{ on }">
                 <v-btn flat icon v-on="on"
-                @click="getTodos">
+                @click="refresh">
                 <v-icon small>refresh</v-icon>
                 </v-btn>
             </template>
-            <span>Refresh todos</span>
+            <span>Reload data</span>
             </v-tooltip>
 
             <v-menu bottom left open-on-hover offset-y max-width="220"> 
@@ -98,164 +109,156 @@
         
         <div class="this-todos-list">
             <v-layout align-center class="px-3">
-            <v-text-field
-                v-model="todo"
-                prepend-inner-icon="assignment"
-                clearable
-                append-icon="add_box"
-                @click:append="addTodo"
-                @keyup.enter="addTodo"
-                required color="teal"
-                :loading="loader"
-                label="Todo"
-                hint="Type your todo and press 'Enter' or click '+' button"
-                persistent-hint
-                :rules="[v => !!v || 'Todo must be provided']"
-                />
+                <v-text-field
+                    v-model="todo"
+                    prepend-inner-icon="assignment"
+                    clearable
+                    append-icon="add_box"
+                    @click:append="addTodo"
+                    @keyup.enter="addTodo"
+                    required color="teal"
+                    :loading="loader"
+                    label="Todo"
+                    hint="Type your todo and press 'Enter' or click '+' button"
+                    persistent-hint
+                    :rules="[v => !!v || 'Todo must be provided']"/>
                 <v-progress-circular
-                :rotate="-90"
-                :size="50"
-                :width="7"
-                class="ml-2"
-                :value="todosCompletionPercentage"
-                color="teal">
-                <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                    <span v-on="on">
-                        {{ todosCompletionScore }}
-                    </span>
-                    </template>
-                    <span>Completed todos</span>
-                </v-tooltip>
+                        :rotate="-90"
+                        :size="50"
+                        :width="7"
+                        class="ml-2"
+                        :value="todosCompletionPercentage"
+                        color="teal">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                        <span v-on="on">
+                            {{ todosCompletionScore }}
+                        </span>
+                        </template>
+                        <span>Completed todos</span>
+                    </v-tooltip>
                 </v-progress-circular>
             </v-layout>
 
-            <v-list two-line>
-            <template v-for="(todo, index) in filteredTodos">
-                <v-list-tile
-                :key="`todo-${index}`"
-                class="this-list-item animated bounceInUp fast">
+            <v-list three-line>
+                <template v-for="(todo, index) in filteredTodos">
+                    <v-list-tile
+                    :key="`todo-${index}`"
+                    class="this-list-item animated bounceInUp fast">
 
-                    <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                            <v-btn flat
-                            icon v-on="on"
-                            class="mx-0 px-0"
-                            :loading="completionLoader"
-                            :color="todo.completed == 1 ? 'teal' : ''"
-                            @click="toggleCompletion(todo, index)">
-                            <v-icon small>check_circle</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Completion Indicator</span>
-                    </v-tooltip>
+                    <div class="this-status-controls">
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-btn flat
+                                icon v-on="on"
+                                class="ma-0 px-0"
+                                :loading="completionLoader"
+                                :color="todo.completed == 1 ? 'teal' : ''"
+                                @click="toggleCompletion(todo, index)">
+                                    <v-icon small>check_circle</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Completion Indicator</span>
+                        </v-tooltip>
 
-                    <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                            <v-btn flat
-                            class="ml-0 px-0"
-                            icon v-on="on"
-                            :disabled="castToBool(todo.completed)"
-                            :loading="importanceLoader"
-                            :color="todo.important == 1 ? 'red' : ''"
-                            @click="toggleImportance(todo, index)">
-                            <v-icon small>{{ todo.important == 1 ? 'flag' : 'outlined_flag' }}</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Importance Indicator</span>
-                    </v-tooltip>
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-btn flat
+                                class="ma-0 px-0"
+                                icon v-on="on"
+                                :disabled="castToBool(todo.completed)"
+                                :loading="importanceLoader"
+                                :color="todo.important == 1 ? 'red' : ''"
+                                @click="toggleImportance(todo, index)">
+                                <v-icon small>{{ todo.important == 1 ? 'flag' : 'outlined_flag' }}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Importance Indicator</span>
+                        </v-tooltip>
+                    </div>
 
-                <v-list-tile-content>
-                    <v-list-tile-sub-title>
-                        <v-layout align-center>
+                    <v-list-tile-content>
+                        <v-list-tile-title>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on }">
                                     <v-btn flat small
-                                    icon v-on="on"
-                                    class="mx-0 px-0"
+                                    icon v-on="on" class="ma-0"
                                     @click="openTodoDetails(todo, index)">
-                                    <v-icon small>info_outline</v-icon>
+                                    <v-icon small>more_horiz</v-icon>
                                     </v-btn>
                                 </template>
                                 <span>Open Details</span>
                             </v-tooltip>
-                            <span class="black--text text-truncate"
-                                :class="{'completed': todo.completed}">{{ todo.value }}</span>
-                        </v-layout>
-                    </v-list-tile-sub-title>
-                    <v-list-tile-sub-title class="caption">
-                        <v-layout align-center>
-                        
-                            <v-chip color="info" outline small>
+                            <span class="black--text no-select"
+                                style="font-size: 14px; cursor: pointer"
+                                :class="{'completed': todo.completed}"
+                                @dblclick="editTodo(todo)">
+                                {{ todo.value }}</span>
+                        </v-list-tile-title>
+
+                        <v-list-tile-sub-title class="ml-4 pl-2 grey--text this-hint no-select"
+                            :class="{'completed': todo.completed}">
+                            Double click on todo title to edit it
+                        </v-list-tile-sub-title>
+
+                        <v-list-tile-sub-title class="caption">
+                            <v-layout align-center>
+                            
+                                <v-chip color="info" outline small>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                            <v-icon small class="mr-1"
+                                                v-on="on" :disabled="castToBool(todo.completed)"
+                                                @click="setPerformer(todo)">create</v-icon>
+                                        </template>
+                                        <span>Edit a todo Performer</span>
+                                    </v-tooltip>
+                                    
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                            <span :class="{'completed': todo.completed}" v-on="on">{{ todoPerformer(todo) }}</span>
+                                        </template>
+                                        <span>Performer of a todo</span>
+                                    </v-tooltip>
+                                </v-chip>
+
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on }">
-                                        <v-icon small class="mr-1"
-                                            v-on="on" :disabled="castToBool(todo.completed)"
-                                            @click="setPerformer(todo)">create</v-icon>
+                                        <v-chip v-if="!todo.completeDate" v-on="on" small color="teal" outline>
+                                            <span :class="{'completed': todo.completed}" class="this-hint">{{ new Date(todo.createdAt).toISOString().substr(0, 10) }}</span>
+                                        </v-chip>
                                     </template>
-                                    <span>Edit a todo Performer</span>
+                                    <span>Todo start date</span>
                                 </v-tooltip>
-                                
+
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on }">
-                                        <span :class="{'completed': todo.completed}" v-on="on">{{ todoPerformer(todo) }}</span>
+                                        <v-chip v-if="todo.completeDate" v-on="on" small color="teal" text-color="white">
+                                            <span class="this-hint">{{ new Date(todo.completeDate).toISOString().substr(0, 10) }}</span>
+                                        </v-chip>
                                     </template>
-                                    <span>Performer of a todo</span>
+                                    <span>Date of completion</span>
                                 </v-tooltip>
-                            </v-chip>
 
+                            </v-layout>
+                        </v-list-tile-sub-title>
+                    </v-list-tile-content>
+
+                        <v-list-tile-action>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on }">
-                                    <v-chip v-on="on" small color="teal" outline>
-                                        <span :class="{'completed': todo.completed}" class="this-hint">{{ new Date(todo.createdAt).toISOString().substr(0, 10) }}</span>
-                                    </v-chip>
+                                <v-btn icon class="ml-1"
+                                    flat v-on="on"
+                                    @click="deleteTodo(todo, index)">
+                                    <v-icon small>delete_outline</v-icon>
+                                </v-btn>
                                 </template>
-                                <span>Start Date</span>
+                                <span>Delete todo</span>
                             </v-tooltip>
-
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on }">
-                                    <v-chip v-if="todo.completeDate" v-on="on" small color="teal" text-color="white">
-                                        <span class="this-hint">{{ new Date(todo.completeDate).toISOString().substr(0, 10) }}</span>
-                                    </v-chip>
-                                </template>
-                                <span>Date of completion</span>
-                            </v-tooltip>
-
-                        </v-layout>
-                    </v-list-tile-sub-title>
-                </v-list-tile-content>
-
-                <v-list-tile-action>
-                    <v-layout>
-                        <v-tooltip top>
-                            <template v-slot:activator="{ on }">
-                            <v-btn icon
-                                flat v-on="on"
-                                :disabled="todo.completed == 1 ? true : false "
-                                @click="editTodo(todo)">
-                                <v-icon small>edit</v-icon>
-                            </v-btn>
-                            </template>
-                            <span>Edit todo</span>
-                        </v-tooltip>
-
-                        <v-tooltip top>
-                            <template v-slot:activator="{ on }">
-                            <v-btn icon class="ml-1"
-                                flat v-on="on"
-                                @click="deleteTodo(todo, index)">
-                                <v-icon small>delete</v-icon>
-                            </v-btn>
-                            </template>
-                            <span>Delete todo</span>
-                        </v-tooltip>
-
-                    </v-layout>
-                </v-list-tile-action>
-                </v-list-tile>
-                <v-divider :key="index" v-if="index < todos.length - 1"/>
-            </template>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-divider :key="index" v-if="index < todos.length - 1"/>
+                </template>
             </v-list>
         </div>
         <v-footer height="auto"
@@ -271,18 +274,23 @@
         </v-footer>
 
         <v-dialog v-model="editTodoModal"
-            min-width="400px" width="50%">
+            max-width="400px" width="100%">
             <edit-todo v-if="editTodoModal" :todo="chosenTodo"/>
         </v-dialog>
 
         <v-dialog v-model="sendEmailModal"
-            min-width="400px" width="50%">
+            max-width="400px" width="100%">
             <send-email v-if="sendEmailModal" :todos="todos"/>
         </v-dialog>
 
         <v-dialog v-model="performerModal"
-            min-width="400px" width="50%">
+            max-width="400px" width="100%">
             <todo-performer v-if="performerModal" :todo="chosenTodo"/>
+        </v-dialog>
+
+        <v-dialog v-model="groupsModal"
+            max-width="450px" width="100%">
+            <groups-participants v-if="groupsModal"/>
         </v-dialog>
 
     </v-layout>
@@ -293,26 +301,36 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Todo } from '@/models/Todo'
 import EditTodo from '@/components/EditTodo.vue'
 import TodoPerformer from '@/components/TodoPerformer.vue'
+import GroupsParticipants from '@/components/GroupsParticipants.vue'
 import SendEmail from '@/components/SendEmail.vue'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
 import BackendService from '@/services/backend'
+import { api } from '@/store/api'
 import { bus } from '@/main'
+import { Group, GroupParticipant } from '../models/Group'
 const backendService = new BackendService()
 
 @Component({
     components: {
-        EditTodo, SendEmail, TodoPerformer
+        EditTodo, 
+        SendEmail, 
+        TodoPerformer, 
+        GroupsParticipants
     }
 })
 export default class Todos extends Vue {
     todos: Todo[] = todos.getTodos
+    groups: Group[] = []
+    groupsIn: Group[] = []
+    participants: GroupParticipant[] = []
     chosenTodo?: Todo
     todo: string = ''
     loader: boolean = false
     completionLoader: boolean = false
     importanceLoader: boolean = false
     performerModal: boolean = false
+    groupsModal: boolean = false
     searchMenu: boolean = false
     search: string = ''
     completedOnly: boolean = false
@@ -384,14 +402,15 @@ export default class Todos extends Vue {
     
     mounted() {
         setTimeout(() => {
-        if(todos.getTodos.length == 0 && users.isLoggedIn) this.getTodos() 
+            if(todos.getTodos.length == 0 && users.isLoggedIn) this.getTodos() 
         }, 700)
+        this.getGroups()
     }
 
     get todosCompletionScore(): number {
         let sum: number = 0
         for(const todo of this.todos) {
-            if(todo.completed) sum++
+            if(todo.completed == 1) sum++
         }
         return sum
     }
@@ -436,6 +455,11 @@ export default class Todos extends Vue {
         return date != null ? date.getTime() : 0
     }
 
+    refresh() {
+        this.getTodos()
+        this.getGroups()
+    }
+
     async getTodos() {
         this.loader = true
         try {
@@ -452,22 +476,45 @@ export default class Todos extends Vue {
 
     async addTodo() {
         if(this.todo) {
-        try {
-            this.loader = true
-            const todo = await backendService.addTodo(this.todo)
-            this.todo = ''
-            this.todos.push(todo)
-            todos.setTodos(this.todos as Todo[])
-        }
-        catch (e) {
-            console.log(e)
-        }
-        finally {
-            this.loader = false
-        }
+            try {
+                this.loader = true
+                const todo = await backendService.addTodo(this.todo)
+                this.todo = ''
+                this.todos.push(todo)
+                todos.setTodos(this.todos as Todo[])
+            }
+            catch (e) {
+                console.log(e)
+            }
+            finally {
+                this.loader = false
+            }
         }
         else {
             bus.$emit('toast', 'Please input a todo')
+        }
+    }
+
+    async getGroups() {
+        try {
+            const result = await backendService.getAllGroups()
+            let allGroups: Group[]
+
+            if(result.groups.length > 0 || result.groupsIn.length > 0) {
+                allGroups = result.groups.length > 0 ?
+                result.groups.concat(result.groupsIn) :
+                result.groupsIn.concat(result.groups)
+                this.groups = allGroups
+            }
+            else {
+                bus.$emit('toast', 'You have no groups/projects')
+                this.groups = []
+            }
+        }
+        catch (e) {
+            console.log(e)
+            bus.$emit('toast', 'Error occurred while fetching groups')
+            this.groups = []
         }
     }
 
@@ -477,12 +524,10 @@ export default class Todos extends Vue {
     }
 
     editTodo(todo: Todo) {
-        this.chosenTodo = todo
-        this.editTodoModal = true
-    }
-
-    deleteCompleted() {
-        
+        if(todo.completed != 1) {
+            this.chosenTodo = todo
+            this.editTodoModal = true
+        }
     }
 
     filterDates() {
@@ -503,6 +548,10 @@ export default class Todos extends Vue {
 
     openTodoDetails(todo: Todo, index: number) {
         bus.$emit('openTodoDetails', todo)
+    }
+
+    openGroups() {
+        this.groupsModal = true
     }
 
     toggleImportance(todo: Todo, index: number) {
@@ -572,15 +621,27 @@ export default class Todos extends Vue {
 <style lang="scss">
 .this-todos {
     max-height: calc(100vh - 64px);
-    height: calc(100% - 64px);
     background-color: white;
     overflow-y: none;
 }
 
 .this-todos-list {
     max-height: calc(100% - 64px);
+    min-height: 440px;
     height: calc(100% - 64px);
     overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+        background: #fff;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: #bfbfbf; 
+    }
 }
 
 .completed {
@@ -599,5 +660,11 @@ export default class Todos extends Vue {
 
 .this-hint {
     font-size: 11px;
+}
+
+.this-status-controls {
+    display: flex;
+    flex-direction: column;
+    width: 40px;
 }
 </style>

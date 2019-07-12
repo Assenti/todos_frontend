@@ -1,9 +1,11 @@
 <template>
-    <v-card flat class="pa-2">
-        <v-card-title>
-            <span class="headline">Change Password</span>
+    <v-card flat>
+        <v-card-title class="subheading blue-grey white--text">
+            <v-icon small left color="white">lock</v-icon>
+            Change password
         </v-card-title>
-        <v-card-text class="px-4">
+
+        <v-card-text class="px-3">
 
             <v-alert v-model="alert"
                 :type="type"
@@ -15,7 +17,7 @@
             </v-alert>
 
             <v-text-field
-                prepend-inner-icon="lock"
+                prepend-icon="lock"
                 v-model="password"
                 :loading="loader"
                 :readonly="correctPassword"
@@ -28,14 +30,14 @@
             </v-text-field>
 
             <v-text-field
-                prepend-inner-icon="lock"
+                prepend-icon="lock"
                 v-model="newPassword" 
                 label="New Password" 
                 required/>
             <v-layout>
                 <v-spacer/>
-                <v-btn color="blue-grey" 
-                text :loading="loading"
+                <v-btn color="primary" 
+                flat :loading="loading"
                 :disabled="!correctPassword" 
                 @click="change">
                     Save

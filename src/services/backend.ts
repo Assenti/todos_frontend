@@ -1,6 +1,7 @@
 import { api, setJWT } from '../store/api'
 import { User, UserSubmit } from '@/models/User'
 import { Todo, Detail } from '@/models/Todo'
+import { Group, AllGroups } from '@/models/Group'
 import { bus } from '@/main'
 import users from '../store/modules/users'
 import todos from '../store/modules/todos'
@@ -194,6 +195,36 @@ class BackendService {
                 resolve()
                 bus.$emit('toast', 'Error ocurred while sending todos list')
             })
+        })
+    }
+
+    getAllGroups(): Promise<AllGroups> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const groups = await api.get(`/api/groups?userid=${users.userId}`)
+                const groupsIn = await api.get(`/api/groupsParticipate?userid=${users.userId}`)
+                let handledGroupsIn: Group[] = []
+
+                if(groupsIn.data.groups.length > 0) {
+                    for(const g of groupsIn.data.groups) {
+                        handledGroupsIn.push({
+                            id: g.id,
+                            name: g.name,
+                            createdAt: g.createdAt,
+                            userId: g.userid,
+                            participate: true
+                        })
+                    }
+                }
+
+                resolve({
+                    groups: groups.data.groups,
+                    groupsIn: handledGroupsIn
+                })
+            }
+            catch (e) {
+                reject(e)
+            }
         })
     }
 }

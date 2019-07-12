@@ -2,7 +2,7 @@
     <div class="pa-4">
         <v-layout class="mb-4" justify-center>
             <div class="text-xs-center headline">
-                {{ restoreMode ? 'Password Restore' : 'Sign in' }}
+                {{ restoreMode ? 'Password restore' : 'Sign in' }}
             </div>
         </v-layout>
         <v-form @submit.prevent="login">
@@ -36,10 +36,7 @@
                     color="primary"
                     label="Remember me"/>
                 <div class="text-xs-right primary--text px-2">
-                    <a href="#passwordRestore"
-                        class="link"
-                        @click="restorePassword">
-                        {{ restoreMode ? 'Back' : 'Forgot Password?' }}</a>
+                    <a class="link" v-if="!restoreMode" @click="restorePassword">Forgot password?</a>
                 </div>
             </v-layout>
 
@@ -48,13 +45,23 @@
                     v-if="!restoreMode" 
                     dark color="blue-grey"
                     :loading="loading">
-                        Login
-                        <v-icon class="ml-1" small>exit_to_app</v-icon>
-                    </v-btn>
+                    Login
+                    <v-icon class="ml-1" small>exit_to_app</v-icon>
+                </v-btn>
+
+                <v-btn v-if="restoreMode"
+                    :loading="loading" 
+                    @click.prevent="restorePassword">
+                    <v-icon class="mr-1" small>arrow_back</v-icon>
+                    Back
+                </v-btn>
                 <v-btn v-if="restoreMode" 
                     color="blue-grey" dark
                     :loading="loading" 
-                    @click.prevent="send">Send</v-btn>
+                    @click.prevent="send">
+                        Send
+                        <v-icon class="ml-1" small>send</v-icon>
+                    </v-btn>
             </v-layout>
                 
         </v-form>

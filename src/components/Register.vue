@@ -55,7 +55,7 @@
                 v-validate="'required'"
                 data-vv-name="Password"
                 :error-messages="errors.collect('Password')"
-                label="Repeat Password"
+                label="Repeat password"
                 type="password"
                 required/>
             
