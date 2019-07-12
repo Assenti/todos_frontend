@@ -18,7 +18,7 @@
 
         <v-list nav dense avatar>
             <template v-for="(item, index) in items">
-                <v-list-tile v-if="item.available"
+                <v-list-tile
                     :key="`item-${index}`"
                     @click="item.function">
                     <v-list-tile-avatar class="mx-0 px-0">
@@ -49,32 +49,27 @@ export default class Drawer extends Vue {
         { 
             title: 'Account', 
             icon: 'account_box', 
-            function: this.openAccount,
-            available: this.loggedIn
+            function: this.openAccount
         },
         { 
             title: 'Change password', 
             icon: 'lock', 
-            function: this.openChangePassword,
-            available: this.loggedIn 
+            function: this.openChangePassword
         },
         { 
             title: 'Invite friends', 
             icon: 'person_add', 
-            function: this.openInvitation,
-            available: this.loggedIn 
+            function: this.openInvitation
         },
         { 
             title: 'Create project/group', 
             icon: 'group', 
-            function: this.openGroups,
-            available: this.loggedIn 
+            function: this.openGroups
         },
         { 
             title: 'Log out', 
             icon: 'exit_to_app', 
-            function: this.logout,
-            available: this.loggedIn 
+            function: this.logout
         }
     ]
 
@@ -82,10 +77,6 @@ export default class Drawer extends Vue {
     onDrawerChanged(v: boolean) {
         if(v == true) bus.$emit('drawerTrue')
         else if(v == false) bus.$emit('drawerFalse')
-    }
-
-    mounted() {
-        this.loggedIn = true
     }
 
     created() {

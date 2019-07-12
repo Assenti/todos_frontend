@@ -38,9 +38,9 @@ const backendService = new BackendService()
 
 @Component
 export default class AccountInfo extends Vue {
-    userName: string | null = users.username
-    userEmail: string | null = users.userEmail
-    userRegisteredDate: string | null = users.registeredDate
+    userName: string = users.username!
+    userEmail: string = users.userEmail!
+    userRegisteredDate: string = users.registeredDate!
     items: object[] = [
         {
             title: users.username,

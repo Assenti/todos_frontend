@@ -14,12 +14,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { bus } from '@/main'
 import Navbar from '@/components/Navbar.vue'
 import Home from '@/views/Home.vue'
-import Account from '@/components/Account.vue'
 import Drawer from '@/components/Drawer.vue'
 
 @Component({
   components: {
-    Navbar, Home, Account, Drawer
+    Navbar, Home, Drawer
   }
 })
 export default class App extends Vue {

@@ -32,16 +32,10 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import Account from '@/components/Account.vue'
 import users from '@/store/modules/users'
 import { bus } from '@/main'
 
-@Component({
-    components: {
-        Account
-    }
-})
-
+@Component({})
 export default class Navbar extends Vue {
     loggedIn: boolean = users.isLoggedIn
     view: string = 'Home'

@@ -16,11 +16,11 @@
         </v-layout>
 
         <v-dialog v-model="accountModal" max-width="500px">
-            <account-info/>
+            <account-info v-if="accountModal"/>
         </v-dialog>
 
         <v-dialog v-model="passwordModal" max-width="350px">
-            <change-password/>
+            <change-password v-if="passwordModal"/>
         </v-dialog>
 
         <v-dialog v-model="invitationModal" max-width="350px">
@@ -28,7 +28,7 @@
         </v-dialog>
 
         <v-dialog v-model="groupsModal" max-width="400px">
-            <groups/>
+            <groups v-if="groupsModal"/>
         </v-dialog>
 
         <v-snackbar top right
