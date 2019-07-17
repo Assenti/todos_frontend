@@ -1,6 +1,6 @@
 <template>
     <v-layout column align-center>
-        <v-card width="400">
+        <v-card width="100%" max-width="400">
             <v-tabs centered color="blue-grey" dark icons-and-text>
                 <v-tabs-slider color="white"/>
                 <v-tab ref="signin" href="#signin">

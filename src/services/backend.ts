@@ -1,6 +1,6 @@
 import { api, setJWT } from '../store/api'
 import { User, UserSubmit } from '@/models/User'
-import { Todo, Detail } from '@/models/Todo'
+import { Todo, Detail, TodoType } from '@/models/Todo'
 import { Group, AllGroups } from '@/models/Group'
 import { bus } from '@/main'
 import users from '../store/modules/users'
@@ -71,7 +71,7 @@ class BackendService {
         })
     }
 
-    // Fetching logged user todos
+    // Fetching logged on user todos
     fetchTodosList(): Promise<Todo[]> {
         return new Promise(async (resolve, reject) => {
             
@@ -96,11 +96,40 @@ class BackendService {
         })
     }
 
-    addTodo(todo: string): Promise<Todo> {
+    // Fetching logged on user todos
+    fetchGroupsTodosList(groupId: number): Promise<Todo[]> {
+        return new Promise(async (resolve, reject) => {
+            
+            try {
+                const { data } = await api.get(`api/grouptodos?groupId=${groupId}`)
+                let receivedTodos = data.todos 
+                if(receivedTodos.length == 0) {
+                    resolve([])
+                    bus.$emit('toast', 'Group todos list is empty')
+                }
+                else {
+                    resolve(receivedTodos as Todo[])
+                    todos.setTodos(receivedTodos as Todo[])
+                }
+            }
+            catch (e) {
+                bus.$emit('toast', 'Error ocurred while downloading todos list')
+                reject(e)
+            }
+        })
+    }
+
+    // Add new todo to todos list
+    addTodo(todo: string, groupId?: number): Promise<Todo> {
         return new Promise(async (resolve, reject) => {
             let credentials = {
                 Value: todo,
-                UserID: users.userId
+                UserID: users.userId,
+                GroupID: 999999999
+            }
+
+            if(groupId) {
+                credentials.GroupID = groupId
             }
             
             try {

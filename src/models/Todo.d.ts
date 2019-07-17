@@ -15,6 +15,13 @@ export interface Todo {
     lastname: string  
 }
 
+export interface TodoType {
+    name: string
+    id?: number
+    createdAt?: string
+    userId?: number
+}
+
 export interface TodosResponse {
     todos?: Todo[]
 }

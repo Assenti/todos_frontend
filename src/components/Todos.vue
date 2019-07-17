@@ -1,35 +1,45 @@
 <template>
-    <v-layout column class="this-todos">
+    <v-layout column class="this-todos elevation-3">
         
         <v-toolbar dense dark flat color="blue-grey">
-            <v-toolbar-title>
-                <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" flat
-                        @click="openCalendar">
-                        <v-icon small>date_range</v-icon>
-                    </v-btn>
-                    </template>
-                    <span>Open a todo calendar</span>
-                </v-tooltip>
-            </v-toolbar-title>
+            
+            <v-select v-model="todosType"
+                class="caption"
+                color="teal"
+                style="max-width: 150px"
+                @change="downloadTodos"
+                return-object
+                item-text="name"
+                item-value="id"
+                dense :items="todosTypes">
+                <template slot="prepend-inner">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                            <v-icon v-on="on">assignment</v-icon>
+                        </template>
+                        <span>Select which todos to download</span>
+                    </v-tooltip>
+                </template>
+            </v-select>
 
-            <v-spacer/>
+            <v-spacer></v-spacer>
             
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
                     <v-btn icon v-on="on" flat
+                        class="mx-0"
                         v-if="groups.length > 0"
                         @click="openGroups">
                     <v-icon small>group</v-icon>
                     </v-btn>
                 </template>
-                <span>Your groups/projects or where are you participate</span>
+                <span>Your groups/projects or where you are participate</span>
             </v-tooltip>
 
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" flat
+                    <v-btn icon v-on="on" 
+                    flat class="mx-0"
                     @click="searchMenu = !searchMenu">
                     <v-icon small>search</v-icon>
                     </v-btn>
@@ -38,18 +48,20 @@
             </v-tooltip>
 
             <v-tooltip top>
-            <template v-slot:activator="{ on }">
-                <v-btn flat icon v-on="on"
-                @click="refresh">
-                <v-icon small>refresh</v-icon>
-                </v-btn>
-            </template>
-            <span>Reload data</span>
+                <template v-slot:activator="{ on }">
+                    <v-btn flat icon 
+                    v-on="on" class="mx-0"
+                    @click="refresh">
+                    <v-icon small>refresh</v-icon>
+                    </v-btn>
+                </template>
+                <span>Reload data</span>
             </v-tooltip>
 
             <v-menu bottom left open-on-hover offset-y max-width="220"> 
                 <template v-slot:activator="{ on }">
                 <v-btn icon flat
+                    class="mx-0"
                     v-on="on">
                     <v-icon small>share</v-icon>
                 </v-btn>
@@ -71,6 +83,7 @@
             <v-menu bottom left open-on-hover offset-y max-width="220"> 
                 <template v-slot:activator="{ on }">
                 <v-btn icon flat
+                    class="mx-0"
                     title="Filters"
                     v-on="on">
                     <v-icon small>filter_list</v-icon>
@@ -91,24 +104,23 @@
                     </v-list-tile>
                 </v-list>
             </v-menu>
-
         </v-toolbar>
 
-        <v-expand-transition>
-            <v-text-field
-            v-if="searchMenu"
-            v-model="search"
-            prepend-inner-icon="search"
-            class="px-3"
-            clearable color="teal"
-            @keyup.escape="searchMenu = false, search = ''"
-            label="Search todo"
-            hint="Start type..."
-            persistent-hint/>
-        </v-expand-transition>
         
         <div class="this-todos-list">
-            <v-layout align-center class="px-3">
+            <v-text-field
+                v-if="searchMenu"
+                v-model="search"
+                prepend-inner-icon="search"
+                class="px-3 animated slideInLeft faster"
+                clearable color="teal"
+                @keyup.escape="searchMenu = false, search = ''"
+                label="Search todo"
+                hint="Start type..."
+                persistent-hint/>
+
+            <v-layout v-if="!searchMenu" 
+                align-center class="px-3 animated slideInLeft faster">
                 <v-text-field
                     v-model="todo"
                     prepend-inner-icon="assignment"
@@ -121,7 +133,7 @@
                     label="Todo"
                     hint="Type your todo and press 'Enter' or click '+' button"
                     persistent-hint
-                    :rules="[v => !!v || 'Todo must be provided']"/>
+                    :rules="[v => !!v || 'You should input todo item']"/>
                 <v-progress-circular
                         :rotate="-90"
                         :size="50"
@@ -181,11 +193,11 @@
                         <v-list-tile-title>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on }">
-                                    <v-btn flat small
-                                    icon v-on="on" class="ma-0"
-                                    @click="openTodoDetails(todo, index)">
-                                    <v-icon small>more_horiz</v-icon>
-                                    </v-btn>
+                                    <v-icon small
+                                        v-on="on" class="mr-1"
+                                        @click="openTodoDetails(todo, index)">
+                                        open_in_new
+                                    </v-icon>
                                 </template>
                                 <span>Open Details</span>
                             </v-tooltip>
@@ -260,16 +272,35 @@
                     <v-divider :key="index" v-if="index < todos.length - 1"/>
                 </template>
             </v-list>
+
+            <div v-if="filteredTodos.length == 0" class="this-no-todos">
+                <v-layout column align-center justify-center>
+                    <v-icon size="50" color="grey lighten-2">mood</v-icon>
+                    <div class="caption grey--text">No todos yet</div>
+                </v-layout>
+            </div>
+
         </div>
         <v-footer height="auto"
             class="px-2" dark
             color="blue-grey">
-            <v-layout justify-center>
-            <div class="px-2">
-                <span class="body-1 white--text">All Todos: {{ todos.length }}</span>
-                <span class="body-1 white--text mx-2">|</span>
-                <span class="body-1 white--text">Remaining: {{ todos.length - todosCompletionScore }}</span>
-            </div>
+            <v-layout justify-space-between align-center>
+                <v-toolbar-title>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                        <v-btn icon v-on="on" flat
+                            @click="openCalendar">
+                            <v-icon small>date_range</v-icon>
+                        </v-btn>
+                        </template>
+                        <span>Open a todo calendar</span>
+                    </v-tooltip>
+                </v-toolbar-title>
+                <div class="px-2">
+                    <span class="body-1 white--text">All Todos: {{ todos.length }}</span>
+                    <span class="body-1 white--text mx-2">|</span>
+                    <span class="body-1 white--text">Remaining: {{ todos.length - todosCompletionScore }}</span>
+                </div>
             </v-layout>
         </v-footer>
 
@@ -298,7 +329,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { Todo } from '@/models/Todo'
+import { Todo, TodoType } from '@/models/Todo'
 import EditTodo from '@/components/EditTodo.vue'
 import TodoPerformer from '@/components/TodoPerformer.vue'
 import GroupsParticipants from '@/components/GroupsParticipants.vue'
@@ -340,6 +371,10 @@ export default class Todos extends Vue {
     editTodoModal: boolean = false
     sendEmailModal: boolean = false
     datesDesc: boolean = true
+    todosType: TodoType = { name: 'Personal' }
+    todosTypes: TodoType[] = [
+        { name: 'Personal' }
+    ]
     actions: object[] = [
         {
             title: 'Send todos via Email',
@@ -460,6 +495,17 @@ export default class Todos extends Vue {
         this.getGroups()
     }
 
+    downloadTodos() {
+        if(this.todosType.name === 'Personal') {
+            this.getTodos()
+        }
+        else {
+            if(this.todosType.id) {
+                this.getGroupTodos(this.todosType.id)
+            }
+        }
+    }
+
     async getTodos() {
         this.loader = true
         try {
@@ -474,11 +520,31 @@ export default class Todos extends Vue {
         }
     }
 
+    async getGroupTodos(groupId: number) {
+        this.loader = true
+        try {
+            const todos = await backendService.fetchGroupsTodosList(groupId)
+            this.todos = todos
+        }
+        catch (e) {
+            console.log(e)
+        }
+        finally {
+            this.loader = false
+        }
+    }
+
     async addTodo() {
         if(this.todo) {
             try {
                 this.loader = true
-                const todo = await backendService.addTodo(this.todo)
+                let todo 
+                if(this.todosType.id) {
+                    todo = await backendService.addTodo(this.todo, this.todosType.id)
+                }
+                else {
+                    todo = await backendService.addTodo(this.todo)
+                }
                 this.todo = ''
                 this.todos.push(todo)
                 todos.setTodos(this.todos as Todo[])
@@ -505,6 +571,10 @@ export default class Todos extends Vue {
                 result.groups.concat(result.groupsIn) :
                 result.groupsIn.concat(result.groups)
                 this.groups = allGroups
+                for(const g of allGroups) {
+                    let group: TodoType = g as unknown as TodoType
+                    this.todosTypes.push(group)
+                }
             }
             else {
                 bus.$emit('toast', 'You have no groups/projects')
@@ -630,6 +700,7 @@ export default class Todos extends Vue {
     min-height: 440px;
     height: calc(100% - 64px);
     overflow-y: auto;
+    position: relative;
 
     &::-webkit-scrollbar {
         width: 6px;
@@ -642,6 +713,17 @@ export default class Todos extends Vue {
     &::-webkit-scrollbar-thumb {
         background: #bfbfbf; 
     }
+}
+
+.this-no-todos {
+    position: absolute;
+    height: calc(100% - 71px);
+    width: 100%;
+    top: 71px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .completed {

@@ -1,26 +1,19 @@
 <template>
-    <v-layout column class="this-todos">
+    <v-layout column class="this-todos elevation-3 mb-1">
 
         <v-toolbar dense dark flat color="blue-grey">
-            <v-layout align-center justify-space-between>
-                <v-toolbar-title class="text-truncate">{{ chosenTodo.value }}</v-toolbar-title>
-                <div>
-                    <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                            <v-btn class="ml-1" text icon v-on="on"
-                            @click="closeDetails">
-                            <v-icon small>close</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Close</span>
-                    </v-tooltip>
-                </div>
-            </v-layout>
+            <v-spacer></v-spacer>
+            <v-btn class="ml-1"
+                title="Close" 
+                text icon
+                @click="closeDetails">
+                <v-icon small>close</v-icon>
+            </v-btn>
         </v-toolbar>
       
-        <div class="this-todos-list">
+        <div class="this-todos-list px-2">
             <div class="this-editor">
-                <div class="this-editor-toolbar">
+                <!-- <div class="this-editor-toolbar">
                     <v-btn-toggle v-model="alignment">
                         <v-btn flat>
                             <v-icon>format_align_left</v-icon>
@@ -61,8 +54,10 @@
                         </v-btn>
                     </v-btn-toggle>
 
-                </div>
+                </div> -->
+                <div class="subheading font-weight-bold pa-2">{{ chosenTodo.value }}</div>
                 <textarea type="text"
+                    ref="detailText"
                     placeholder="Write your staff here..." 
                     v-model="editorData" />
                     
@@ -77,11 +72,6 @@
                 </v-btn>
             </v-layout>
         </div>
-
-        <v-footer height="auto"
-            class="px-2" dark
-            color="blue-grey">
-        </v-footer>
     </v-layout>
 </template>
 
@@ -123,6 +113,8 @@ export default class TodoDetails extends Vue {
   
     mounted() {
         this.getDetails()
+        const detailText = this.$refs.detailText as HTMLInputElement
+        detailText.focus()
     }
 
     closeDetails() {
@@ -234,8 +226,13 @@ export default class TodoDetails extends Vue {
     & > textarea {
         min-height: 339px;
         width: 100%;
-        outline: none;
+        outline: 0;
+        border-radius: 3px;
         padding: 10px;
+
+        &:focus {
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, .5);
+        }
 
         &::placeholder {
             color: #909090;
