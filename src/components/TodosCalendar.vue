@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="elevation-3 mb-1">
         <v-toolbar dense dark flat color="blue-grey">
             <v-toolbar-title>
                 Todos Calendar                

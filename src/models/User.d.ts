@@ -5,8 +5,9 @@ export interface User {
     email: string
     createdAt: string
     password: string
-    token: string,
+    token: string
     avatar: string
+    lastLoggedOn?: string
 }
 
 export interface Performer {

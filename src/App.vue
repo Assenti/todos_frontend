@@ -1,12 +1,15 @@
 <template>
-  <v-app>
-    <div class="backdrop"></div>
-    <navbar/>
-    <drawer/>
-    <v-content>
-      <component :is="current"/>
-    </v-content>
-  </v-app>
+    <v-app>
+        <div class="backdrop"></div>
+        <navbar/>
+        <drawer>
+            <template slot="content">
+                <v-content>
+                    <component :is="current"/>
+                </v-content>
+            </template>
+        </drawer>
+    </v-app>
 </template>
 
 <script lang="ts">

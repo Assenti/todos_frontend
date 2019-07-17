@@ -57,6 +57,11 @@ export default class AccountInfo extends Vue {
             desc: 'User registered date',
             icon: 'event'
         },
+        {
+            title: this.dateTimeHandler(users.getLastLoggedOn),
+            desc: 'User last logged on date and time',
+            icon: 'exit_to_app'
+        },
         // {
         //     title: `${32} years old`,
         //     desc: 'User birth date',
@@ -69,6 +74,14 @@ export default class AccountInfo extends Vue {
             return new Date(this.userRegisteredDate).toISOString().substr(0, 10)
         }
         else return null
+    }
+
+    dateTimeHandler(date: string | undefined): string | undefined {
+        if(date) {
+            // 2019-07-18T00:50:14.901713+06:00 - input format
+            return `${date.slice(0, 10)} ${date.slice(11, 19)}`
+        }
+        else return undefined
     }
 }
 </script>

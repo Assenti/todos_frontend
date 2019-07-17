@@ -16,6 +16,8 @@
 
             <v-text-field v-model="receiver"
                 required browser-autocomplete="on"
+                persistent-hint
+                hint="Can be inputted only one email at once"
                 :rules="[value => !!value || 'Required']"
                 label="To">
                 <template slot="prepend">
@@ -23,7 +25,7 @@
                 </template>
             </v-text-field>
 
-            <div class="caption grey--text">{{ sendingHint }}</div>
+            <div class="caption grey--text pt-1 pl-4 ml-2">{{ sendingHint }}</div>
 
             <v-alert v-model="alert"
                 outline
