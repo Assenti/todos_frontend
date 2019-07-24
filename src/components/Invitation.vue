@@ -1,36 +1,33 @@
 <template>
     <v-card>
         <v-card-title class="subheading blue-grey white--text">
-            <v-icon small left color="white">person_add</v-icon>
+            <v-icon left color="white">person_add</v-icon>
             Invite your friend
         </v-card-title>
 
-        <v-card-text>
-            
+        <v-card-text class="pt-3">
             <v-text-field v-model="receiver"
+                prepend-icon="email"
                 required persistent-hint
                 hint="Input your friend's email and click send button"
                 :rules="[value => !!value || 'Required',
                         v => /.+@.+/.test(v) || 'E-mail must be valid']"
                 label="To">
-                <template slot="prepend">
-                    <v-icon>email</v-icon>
-                </template>
             </v-text-field>
 
             <v-alert v-model="alert"
-                outline
-                :type="status" dense 
+                border="left" text
+                :type="status" 
                 dismissible>
                 {{ message }}
             </v-alert>
 
-            <v-layout>
+            <v-layout class="mt-2">
                 <v-spacer/>
                 <v-btn color="primary" 
                     :loading="loading"
                     :disabled="!receiver"
-                    flat @click="send">
+                    text @click="send">
                     Send
                     <v-icon class="ml-1" small>send</v-icon>
                 </v-btn>

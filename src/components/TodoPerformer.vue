@@ -1,7 +1,7 @@
 <template>
     <v-card min-height="300">
-        <v-card-title class="subheading">
-            <v-icon small left>person</v-icon>
+        <v-card-title class="blue-grey white--text">
+            <v-icon left dark>person</v-icon>
             Set todo performer
         </v-card-title>
         <v-card-text>
@@ -23,22 +23,21 @@
                     {{ item.firstname }} {{ item.lastname }}
                 </template>
                 <template v-slot:item="{ item }">
-                    <v-list-tile-content>
-                        <v-list-tile-title>
+                    <v-list-item-content>
+                        <v-list-item-title>
                             <v-layout align-center justify-space-between>
                                 <div>{{ item.firstname }} {{ item.lastname }}</div>
-                                <v-chip class="ma-0 pa-0" 
-                                    color="info" 
-                                    outline small>{{ item.email }}</v-chip>
+                                <v-chip color="info" 
+                                    outlined small>{{ item.email }}</v-chip>
                             </v-layout>
-                        </v-list-tile-title>
-                    </v-list-tile-content>
+                        </v-list-item-title>
+                    </v-list-item-content>
                 </template>
             </v-autocomplete>
 
             <v-alert v-model="alert"
-                outline
-                :type="status" dense 
+                border="left" text
+                :type="status" 
                 dismissible>
                 {{ message }}
             </v-alert>
@@ -47,7 +46,7 @@
                 <v-spacer/>
                 <v-btn color="primary" 
                     :loading="loading"
-                    flat @click="setPerformer">
+                    text @click="setPerformer">
                     Save
                     <v-icon class="ml-1" small>save</v-icon>
                 </v-btn>

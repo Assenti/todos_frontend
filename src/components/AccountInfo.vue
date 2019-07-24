@@ -1,26 +1,26 @@
 <template>
     <v-card flat>
 
-        <v-card-title class="subheading blue-grey white--text">
-            <v-icon small left color="white">person</v-icon>
+        <v-card-title class="blue-grey white--text">
+            <v-icon left color="white">person</v-icon>
             User Profile
         </v-card-title>
 
         <v-card-text class="px-3">
-            <v-list avatar two-line>
-                <v-list-tile v-for="(item, index) in items" :key="index">
-                    <v-list-tile-avatar>
+            <v-list two-line>
+                <v-list-item v-for="(item, index) in items" :key="index">
+                    <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                        <v-list-tile-title>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>
                             {{ item.title }}
-                        </v-list-tile-title>
-                        <v-list-tile-sub-title>
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
                             {{ item.desc }}
-                        </v-list-tile-sub-title>
-                    </v-list-tile-content>
-                </v-list-tile>
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list>
         </v-card-text>
     </v-card>

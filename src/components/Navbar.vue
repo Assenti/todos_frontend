@@ -1,8 +1,12 @@
 <template>
     <div>
-        <v-toolbar app flat
+        <v-app-bar flat dense
             color="transparent">
-            <v-toolbar-side-icon v-if="loggedIn" @click="menu = !menu"/>
+
+            <v-btn v-if="loggedIn"
+                @click="menu = !menu" icon text>
+                <v-icon>menu</v-icon>
+            </v-btn>
 
             <v-toolbar-title class="headline ml-2 no-select">
                 <span class="font-weight-bold">
@@ -14,19 +18,19 @@
             <v-spacer/>
             <v-toolbar-items class="hidden-xs-only">
                 <v-btn v-if="loggedIn && view === 'Home'"
-                    flat small @click="openAccountInfo">
+                    text small @click="openAccountInfo">
                     <v-icon small class="mr-1">account_circle</v-icon>Account
                 </v-btn>
                 <v-btn v-if="loggedIn && view === 'Account'"
-                    flat small @click="switchView('Home')">
+                    text small @click="switchView('Home')">
                     <v-icon small class="mr-1">home</v-icon>Home
                 </v-btn>
                 <v-btn v-if="loggedIn"
-                    flat small @click="logout">
+                    text small @click="logout">
                     <v-icon small class="mr-1">exit_to_app</v-icon>Sign out
                 </v-btn>
             </v-toolbar-items>
-        </v-toolbar>
+        </v-app-bar>
     </div>
 </template>
 

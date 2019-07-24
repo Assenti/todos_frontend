@@ -16,7 +16,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { bus } from '@/main'
 import Navbar from '@/components/Navbar.vue'
-import Home from '@/views/Home.vue'
+import Home from '@/components/Home.vue'
 import Drawer from '@/components/Drawer.vue'
 
 @Component({

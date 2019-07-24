@@ -8,13 +8,14 @@
         <v-form @submit.prevent="login">
             
             <v-alert v-model="alert"
-                outline
-                type="error" dense 
+                border="left"
+                type="error" text
+                close-label="close"
                 dismissible>
                 {{ message }}
             </v-alert>
 
-            <v-text-field
+            <v-text-field autocomplete="off"
                 prepend-icon="mail"
                 v-model="email"
                 :rules="[v => !!v || 'Email is required']"
@@ -33,8 +34,7 @@
             <v-layout align-center justify-space-between>
                 <v-checkbox v-model="remember"
                     v-if="!restoreMode"
-                    color="primary"
-                    label="Remember me"/>
+                    label="Remember me"></v-checkbox>
                 <div class="text-xs-right primary--text px-2">
                     <a class="link" v-if="!restoreMode" @click="restorePassword">Forgot password?</a>
                 </div>
@@ -50,11 +50,12 @@
                 </v-btn>
 
                 <v-btn v-if="restoreMode"
-                    :loading="loading" 
+                    :loading="loading" class="mr-2" 
                     @click.prevent="restorePassword">
                     <v-icon class="mr-1" small>arrow_back</v-icon>
                     Back
                 </v-btn>
+
                 <v-btn v-if="restoreMode" 
                     color="blue-grey" dark
                     :loading="loading" 

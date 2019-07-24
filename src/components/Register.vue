@@ -6,9 +6,9 @@
         <v-form @submit.prevent="submit">
 
             <v-alert v-model="alert"
-                dismissible dense
+                dismissible text
                 :type="status"
-                outline>
+                border="left">
                 {{ message }}
             </v-alert>
 

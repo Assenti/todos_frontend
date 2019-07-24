@@ -1,6 +1,6 @@
 <template>
-    <div class="elevation-3 mb-1">
-        <v-toolbar dense dark flat color="blue-grey">
+    <v-card class="mb-1">
+        <v-app-bar dense dark flat color="blue-grey">
             <v-toolbar-title>
                 Todos Calendar                
             </v-toolbar-title>
@@ -8,7 +8,7 @@
             <div>
                 <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                    <v-btn flat icon dark
+                    <v-btn text icon dark
                         v-on="on" small
                         @click="hideCalendar">
                         <v-icon small>close</v-icon>
@@ -17,7 +17,7 @@
                     <span>Hide Calendar</span>
                 </v-tooltip>
             </div>
-        </v-toolbar>
+        </v-app-bar>
         <v-calendar :weekdays="[1,2,3,4,5,6,0]"
             v-model="currentDayOnCalendar" 
             ref="calendar"
@@ -44,13 +44,13 @@
                                 <v-divider/>
                                 <v-list dense class="py-0">
                                     <template v-for="(todo, i) in returnTodosOfDate(date)">
-                                        <v-list-tile
+                                        <v-list-item
                                             @click="voidFunc"
                                             :key="`date-todo-${i}`">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>{{ i + 1}}) {{ todo.value }}</v-list-tile-title>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
+                                            <v-list-item-content>
+                                                <v-list-item-title>{{ i + 1}}) {{ todo.value }}</v-list-item-title>
+                                            </v-list-item-content>
+                                        </v-list-item>
                                         <v-divider :key="i"/>
                                     </template>
                                 </v-list>
@@ -64,17 +64,17 @@
             class="px-2" dark
             color="blue-grey">
             <v-layout align-center justify-space-between>
-                <v-btn small flat @click="$refs.calendar.prev()">
+                <v-btn small text @click="$refs.calendar.prev()">
                     <v-icon>keyboard_arrow_left</v-icon>
                     Prev
                 </v-btn>
-                <v-btn small flat @click="$refs.calendar.next()">
+                <v-btn small text @click="$refs.calendar.next()">
                     <v-icon>keyboard_arrow_right</v-icon>
                     Next
                 </v-btn>
             </v-layout>
         </v-footer>
-    </div>
+    </v-card>
 </template>
 
 <script lang="ts">

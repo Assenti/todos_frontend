@@ -1,15 +1,15 @@
 <template>
     <v-layout column class="this-todos elevation-3 mb-1">
 
-        <v-toolbar dense dark flat color="blue-grey">
-            <v-spacer></v-spacer>
-            <v-btn class="ml-1"
-                title="Close" 
-                text icon
+        <v-layout style="height: 48px"
+            align-center justify-end 
+            class="blue-grey px-2">
+            <v-btn title="Close" dark
+                text icon small
                 @click="closeDetails">
                 <v-icon small>close</v-icon>
             </v-btn>
-        </v-toolbar>
+        </v-layout>
       
         <div class="this-todos-list px-2">
             <div class="this-editor">
@@ -64,12 +64,14 @@
             </div>
             <v-layout>
                 <v-spacer/>
-                <v-btn flat color="primary"
-                    :loading="loader"
-                    @click="save">
-                    save
-                    <v-icon small class="ml-1">save</v-icon>
-                </v-btn>
+                <div>
+                    <v-btn text color="primary"
+                        :loading="loader"
+                        @click="save">
+                        save
+                        <v-icon small class="ml-1">save</v-icon>
+                    </v-btn>
+                </div>
             </v-layout>
         </div>
     </v-layout>

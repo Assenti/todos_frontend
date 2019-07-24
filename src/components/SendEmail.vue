@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title class="blue-grey white--text subheading">
-            <v-icon small left color="white">email</v-icon>
+            <v-icon left color="white">email</v-icon>
             Send todos via email
         </v-card-title>
         <v-card-text>
@@ -9,13 +9,13 @@
             <v-layout>
                 <span class="caption mr-4">Send to: </span>
                 <v-radio-group v-model="receiverType" row>
-                    <v-radio label="Me" value="Me" color="primary"/>
+                    <v-radio label="Me" value="Me"/>
                     <v-radio label="Other" value="Other" color="primary"/>
                 </v-radio-group>
             </v-layout>
 
             <v-text-field v-model="receiver"
-                required browser-autocomplete="on"
+                required
                 persistent-hint
                 hint="Can be inputted only one email at once"
                 :rules="[value => !!value || 'Required']"
@@ -28,8 +28,8 @@
             <div class="caption grey--text pt-1 pl-4 ml-2">{{ sendingHint }}</div>
 
             <v-alert v-model="alert"
-                outline
-                :type="status" dense 
+                border="left" text
+                :type="status" 
                 dismissible>
                 {{ message }}
             </v-alert>
@@ -39,7 +39,7 @@
                 <v-btn color="primary" 
                     :loading="loading"
                     :disabled="!todos || todos.length == 0"
-                    flat @click="send">
+                    text @click="send">
                     Send
                     <v-icon class="ml-1" small>send</v-icon>
                 </v-btn>
@@ -86,11 +86,18 @@ export default class SendEmail extends Vue {
 
     async send() {
         try {
-            this.loading = true
-            await api.post(`api/sendViaEmail?email=${this.receiver}`, this.todos)
-            this.alert = true
-            this.message = 'Todos successfully sent'
-            this.status = 'success'
+            if(this.receiver) {
+                this.loading = true
+                await api.post(`api/sendViaEmail?email=${this.receiver}`, this.todos)
+                this.alert = true
+                this.message = 'Todos successfully sent'
+                this.status = 'success'
+            }
+            else {
+                this.alert = true
+                this.message = 'Input a list receiver'
+                this.status = 'error'
+            }
         }
         catch (e) {
             this.alert = true

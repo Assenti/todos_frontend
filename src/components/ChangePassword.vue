@@ -1,11 +1,11 @@
 <template>
     <v-card flat>
-        <v-card-title class="subheading blue-grey white--text">
-            <v-icon small left color="white">lock</v-icon>
+        <v-card-title class="blue-grey white--text">
+            <v-icon left color="white">lock</v-icon>
             Change password
         </v-card-title>
 
-        <v-card-text class="px-3">
+        <v-card-text class="pt-2 px-3">
 
             <v-alert v-model="alert"
                 :type="type"
@@ -37,7 +37,7 @@
             <v-layout>
                 <v-spacer/>
                 <v-btn color="primary" 
-                flat :loading="loading"
+                text :loading="loading"
                 :disabled="!correctPassword" 
                 @click="change">
                     Save

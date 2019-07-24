@@ -1,10 +1,11 @@
 <template>
-    <v-layout column class="this-todos elevation-3">
+    <v-card class="this-todos">
         
-        <v-toolbar dense dark flat color="blue-grey">
+        <v-layout style="height: 48px"
+            align-center class="blue-grey px-2">
             
             <v-select v-model="todosType"
-                class="caption"
+                class="caption" dark
                 color="teal"
                 style="max-width: 150px"
                 @change="downloadTodos"
@@ -26,8 +27,9 @@
             
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" flat
-                        class="mx-0"
+                    <v-btn icon v-on="on" text
+                        dark
+                        class="mx-0" small
                         v-if="groups.length > 0"
                         @click="openGroups">
                     <v-icon small>group</v-icon>
@@ -38,8 +40,8 @@
 
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                    <v-btn icon v-on="on" 
-                    flat class="mx-0"
+                    <v-btn icon v-on="on" dark 
+                    text class="mx-0" small
                     @click="searchMenu = !searchMenu">
                     <v-icon small>search</v-icon>
                     </v-btn>
@@ -49,7 +51,7 @@
 
             <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                    <v-btn flat icon 
+                    <v-btn text icon small dark
                     v-on="on" class="mx-0"
                     @click="refresh">
                     <v-icon small>refresh</v-icon>
@@ -60,64 +62,71 @@
 
             <v-menu bottom left open-on-hover offset-y max-width="220"> 
                 <template v-slot:activator="{ on }">
-                <v-btn icon flat
-                    class="mx-0"
+                <v-btn icon text small
+                    class="mx-0" dark
                     v-on="on">
                     <v-icon small>share</v-icon>
                 </v-btn>
                 </template>
 
-                <v-list avatar dense>
-                <v-list-tile
-                    v-for="(item, i) in actions"
-                    :key="i"
-                    @click="item.action">
-                    <v-icon small class="mr-2">{{ item.icon }}</v-icon>
-                    <v-list-tile-title>
-                        {{ item.title }}
-                    </v-list-tile-title>
-                </v-list-tile>
+                <v-list dense>
+                    <v-list-item
+                        v-for="(item, i) in actions"
+                        :key="i"
+                        @click="item.action">
+                        <v-icon small class="mr-2">{{ item.icon }}</v-icon>
+                        <v-list-item-title>
+                            {{ item.title }}
+                        </v-list-item-title>
+                    </v-list-item>
                 </v-list>
             </v-menu>
 
             <v-menu bottom left open-on-hover offset-y max-width="220"> 
                 <template v-slot:activator="{ on }">
-                <v-btn icon flat
-                    class="mx-0"
-                    title="Filters"
-                    v-on="on">
-                    <v-icon small>filter_list</v-icon>
-                </v-btn>
+                    <v-btn icon text small
+                        class="mx-0" dark
+                        title="Filters"
+                        v-on="on">
+                        <v-icon small>filter_list</v-icon>
+                    </v-btn>
                 </template>
 
-                <v-list avatar dense class="py-0">
+                <v-list dense class="py-0">
                     <div class="px-3 py-2 blue-grey--text">Sort by:</div>
                     <v-divider/>
-                    <v-list-tile
+                    <v-list-item
                         v-for="(f, i) in filters"
                         :key="i"
                         @click="f.action">
-                        <v-icon class="mr-2" :color="f.color">{{ f.icon }}</v-icon>
-                        <v-list-tile-title>
+                        <v-icon class="mr-2" small :color="f.color">{{ f.icon }}</v-icon>
+                        <v-list-item-title>
                             {{ f.title }}
-                        </v-list-tile-title>
-                    </v-list-tile>
+                        </v-list-item-title>
+                    </v-list-item>
                 </v-list>
             </v-menu>
-        </v-toolbar>
+        </v-layout>
 
         
         <div class="this-todos-list">
-            <v-text-field
-                v-if="searchMenu"
-                v-model="search"
-                prepend-inner-icon="search"
-                class="px-3 animated slideInLeft faster"
-                clearable color="teal"
-                @keyup.escape="searchMenu = false, search = ''"
-                label="Search todo"
-                hint="Start type..."
-                persistent-hint/>
+            <v-layout v-if="searchMenu" align-center>
+                <v-text-field
+                    v-model="search"
+                    prepend-inner-icon="search"
+                    class="px-3 animated slideInLeft faster"
+                    clearable color="teal"
+                    @keyup.escape="searchMenu = false, search = ''"
+                    label="Search todo"
+                    hint="Start type..."
+                    persistent-hint/>
+                <v-btn icon small text
+                    class="mx-2" title="Hide search field"
+                    @click="searchMenu = false">
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-layout>
+            
 
             <v-layout v-if="!searchMenu" 
                 align-center class="px-3 animated slideInLeft faster">
@@ -143,9 +152,9 @@
                         color="teal">
                     <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                        <span v-on="on">
-                            {{ todosCompletionScore }}
-                        </span>
+                            <span v-on="on">
+                                {{ todosCompletionScore }}
+                            </span>
                         </template>
                         <span>Completed todos</span>
                     </v-tooltip>
@@ -154,15 +163,15 @@
 
             <v-list three-line>
                 <template v-for="(todo, index) in filteredTodos">
-                    <v-list-tile
+                    <v-list-item
                     :key="`todo-${index}`"
                     class="this-list-item animated bounceInUp fast">
 
-                    <div class="this-status-controls">
+                    <div class="this-status-controls mr-1">
                         <v-tooltip top>
                             <template v-slot:activator="{ on }">
-                                <v-btn flat
-                                icon v-on="on"
+                                <v-btn text
+                                icon v-on="on" small
                                 class="ma-0 px-0"
                                 :loading="completionLoader"
                                 :color="todo.completed == 1 ? 'teal' : ''"
@@ -175,7 +184,7 @@
 
                         <v-tooltip top>
                             <template v-slot:activator="{ on }">
-                                <v-btn flat
+                                <v-btn text small
                                 class="ma-0 px-0"
                                 icon v-on="on"
                                 :disabled="castToBool(todo.completed)"
@@ -189,8 +198,8 @@
                         </v-tooltip>
                     </div>
 
-                    <v-list-tile-content>
-                        <v-list-tile-title>
+                    <v-list-item-content>
+                        <v-list-item-title>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on }">
                                     <v-icon small
@@ -206,17 +215,17 @@
                                 :class="{'completed': todo.completed}"
                                 @dblclick="editTodo(todo)">
                                 {{ todo.value }}</span>
-                        </v-list-tile-title>
+                        </v-list-item-title>
 
-                        <v-list-tile-sub-title class="ml-4 pl-2 grey--text this-hint no-select"
+                        <v-list-item-subtitle class="ml-4 pl-2 grey--text this-hint no-select"
                             :class="{'completed': todo.completed}">
                             Double click on todo title to edit it
-                        </v-list-tile-sub-title>
+                        </v-list-item-subtitle>
 
-                        <v-list-tile-sub-title class="caption">
+                        <v-list-item-subtitle class="caption">
                             <v-layout align-center>
                             
-                                <v-chip color="info" outline small>
+                                <v-chip color="info" outlined small>
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on }">
                                             <v-icon small class="mr-1"
@@ -236,7 +245,9 @@
 
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on }">
-                                        <v-chip v-if="!todo.completeDate" v-on="on" small color="teal" outline>
+                                        <v-chip v-if="!todo.completeDate"
+                                            class="ml-1" 
+                                            v-on="on" small color="teal" outlined>
                                             <span :class="{'completed': todo.completed}" class="this-hint">{{ new Date(todo.createdAt).toISOString().substr(0, 10) }}</span>
                                         </v-chip>
                                     </template>
@@ -245,7 +256,9 @@
 
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on }">
-                                        <v-chip v-if="todo.completeDate" v-on="on" small color="teal" text-color="white">
+                                        <v-chip v-if="todo.completeDate" 
+                                            class="ml-1"
+                                            v-on="on" small color="teal" text-color="white">
                                             <span class="this-hint">{{ new Date(todo.completeDate).toISOString().substr(0, 10) }}</span>
                                         </v-chip>
                                     </template>
@@ -253,22 +266,21 @@
                                 </v-tooltip>
 
                             </v-layout>
-                        </v-list-tile-sub-title>
-                    </v-list-tile-content>
-
-                        <v-list-tile-action>
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                        <v-list-item-action>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on }">
                                 <v-btn icon class="ml-1"
-                                    flat v-on="on"
+                                    text v-on="on" small
                                     @click="deleteTodo(todo, index)">
                                     <v-icon small>delete_outline</v-icon>
                                 </v-btn>
                                 </template>
                                 <span>Delete todo</span>
                             </v-tooltip>
-                        </v-list-tile-action>
-                    </v-list-tile>
+                        </v-list-item-action>
+                    </v-list-item>
                     <v-divider :key="index" v-if="index < todos.length - 1"/>
                 </template>
             </v-list>
@@ -288,7 +300,7 @@
                 <v-toolbar-title>
                     <v-tooltip top>
                         <template v-slot:activator="{ on }">
-                        <v-btn icon v-on="on" flat
+                        <v-btn icon v-on="on" text small
                             @click="openCalendar">
                             <v-icon small>date_range</v-icon>
                         </v-btn>
@@ -324,7 +336,7 @@
             <groups-participants v-if="groupsModal"/>
         </v-dialog>
 
-    </v-layout>
+    </v-card>
 </template>
 
 <script lang="ts">

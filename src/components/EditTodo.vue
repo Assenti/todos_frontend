@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title class="blue-grey white--text subheading">
-            <v-icon small left color="white">edit</v-icon>
+            <v-icon left color="white">edit</v-icon>
             Edit todo
         </v-card-title>
         
@@ -21,7 +21,7 @@
 
         <v-card-actions class="py-4">
             <v-spacer/>
-            <v-btn flat
+            <v-btn text
                 color="primary"
                 :autofocus="true"
                 :loading="loader"

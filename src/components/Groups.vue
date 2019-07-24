@@ -1,7 +1,7 @@
 <template>
     <v-card min-height="200">
         <v-card-title class="subheading blue-grey white--text">
-            <v-icon small left color="white">group</v-icon>
+            <v-icon left color="white">group</v-icon>
             Create group/project
         </v-card-title>
 
@@ -14,17 +14,17 @@
                 prepend-icon="group"/>
 
             <v-alert v-model="alert"
-                outline
-                :type="status" dense 
+                border="left" text
+                :type="status" 
                 dismissible>
                 {{ message }}
             </v-alert>
 
-            <v-layout>
+            <v-layout class="mt-2">
                 <v-spacer/>
                 <v-btn color="primary" 
                     :loading="loading"
-                    flat @click="createGroup">
+                    text @click="createGroup">
                     create
                     <v-icon class="ml-1" small>add_box</v-icon>
                 </v-btn>

@@ -7,41 +7,43 @@
             temporary>
             <v-layout style="height: 100%" column justify-space-between>
                 <div>
-                    <v-toolbar flat color="blue-grey" dark>
+                    <v-app-bar flat color="blue-grey" dark>
                         <v-layout align-center
                             justify-space-between>
                             <div class="title">Personal Planner</div>
                             <v-btn title="Close"
-                                @click="drawer = false" icon flat>
+                                @click="drawer = false" icon text>
                                 <v-icon>chevron_left</v-icon>
                             </v-btn>
                         </v-layout>
-                    </v-toolbar>
+                    </v-app-bar>
 
                     <v-divider/>
 
-                    <v-list nav dense avatar>
+                    <v-list shaped dense>
                         <template v-for="(item, index) in items">
-                            <v-list-tile
+                            <v-list-item
                                 :key="`item-${index}`"
                                 @click="item.function">
-                                <v-list-tile-avatar class="mx-0 px-0">
-                                    <v-icon>{{ item.icon }}</v-icon>
-                                </v-list-tile-avatar>
-                                <v-list-tile-content>
-                                    <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
+                                <v-list-item-icon>
+                                    <v-icon v-text="item.icon"/>
+                                </v-list-item-icon>
+                                <v-list-item-content>
+                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
                             <v-divider :key="index" v-if="index < item.length - 1"/>
                         </template>
                     </v-list>
                 </div>
                 <div>
-                    <h1 class="headline blue-grey--text text-xs-center no-select">
-                        Personal Planner
-                        <small class="caption">ver. 2.0</small>
-                    </h1>
-                    <v-layout align-center justify-center class="pb-4">
+                    <v-layout column align-center justify-center>
+                        <div class="headline blue-grey--text no-select">
+                            Personal Planner
+                            <small class="caption">ver. 2.0</small>
+                        </div>
+                    </v-layout>
+                    <v-layout align-center justify-center class="pb-4 pt-2">
                         <div class="caption blue-grey--text text-xs-center">
                         Web application by</div>
                         <v-tooltip top>
