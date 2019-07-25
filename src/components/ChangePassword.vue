@@ -36,8 +36,8 @@
                 required/>
             <v-layout>
                 <v-spacer/>
-                <v-btn color="primary" 
-                text :loading="loading"
+                <v-btn color="blue-grey" 
+                dark depressed :loading="loading"
                 :disabled="!correctPassword" 
                 @click="change">
                     Save

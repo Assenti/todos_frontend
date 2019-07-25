@@ -4,8 +4,8 @@
             <v-icon left color="white">email</v-icon>
             Send todos via email
         </v-card-title>
-        <v-card-text>
-            
+
+        <v-card-text class="pt-2">
             <v-layout>
                 <span class="caption mr-4">Send to: </span>
                 <v-radio-group v-model="receiverType" row>
@@ -18,10 +18,11 @@
                 required
                 persistent-hint
                 hint="Can be inputted only one email at once"
-                :rules="[value => !!value || 'Required']"
+                :rules="[v => !!v || 'E-mail address is required',
+                        v => /.+@.+/.test(v) || 'E-mail must be valid']"
                 label="To">
                 <template slot="prepend">
-                    <v-icon>person</v-icon>
+                    <v-icon>email</v-icon>
                 </template>
             </v-text-field>
 
@@ -36,10 +37,10 @@
 
             <v-layout>
                 <v-spacer/>
-                <v-btn color="primary" 
+                <v-btn color="blue-grey" 
                     :loading="loading"
                     :disabled="!todos || todos.length == 0"
-                    text @click="send">
+                    dark depressed @click="send">
                     Send
                     <v-icon class="ml-1" small>send</v-icon>
                 </v-btn>

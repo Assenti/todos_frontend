@@ -24,10 +24,10 @@
 
             <v-layout class="mt-2">
                 <v-spacer/>
-                <v-btn color="primary" 
+                <v-btn color="blue-grey" 
                     :loading="loading"
                     :disabled="!receiver"
-                    text @click="send">
+                    depressed dark @click="send">
                     Send
                     <v-icon class="ml-1" small>send</v-icon>
                 </v-btn>

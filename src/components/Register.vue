@@ -62,7 +62,7 @@
             <v-layout class="py-3">
                 <v-spacer/>
                 <v-btn dark color="blue-grey"
-                    :loading="loading"
+                    :loading="loading" depressed
                     type="submit">
                     Register
                     <v-icon small class="ml-1">person_add</v-icon>

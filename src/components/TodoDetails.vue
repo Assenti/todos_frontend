@@ -65,7 +65,8 @@
             <v-layout>
                 <v-spacer/>
                 <div>
-                    <v-btn text color="primary"
+                    <v-btn dark color="blue-grey"
+                        depressed
                         :loading="loader"
                         @click="save">
                         save

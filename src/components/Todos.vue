@@ -225,21 +225,25 @@
                         <v-list-item-subtitle class="caption">
                             <v-layout align-center>
                             
-                                <v-chip color="info" outlined small>
+                                <v-chip color="info" small>
+                                    <v-icon small class="mr-1"
+                                        :disabled="castToBool(todo.completed)"
+                                    @click="setPerformer(todo)">account_circle</v-icon>
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on }">
-                                            <v-icon small class="mr-1"
-                                                v-on="on" :disabled="castToBool(todo.completed)"
-                                                @click="setPerformer(todo)">create</v-icon>
-                                        </template>
-                                        <span>Edit a todo Performer</span>
-                                    </v-tooltip>
-                                    
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on }">
-                                            <span :class="{'completed': todo.completed}" v-on="on">{{ todoPerformer(todo) }}</span>
+                                            <span :class="{'completed': todo.completed}" v-on="on">{{ nameTruncate(todoPerformer(todo)) }}</span>
                                         </template>
                                         <span>Performer of a todo</span>
+                                    </v-tooltip>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                            <v-avatar class="blue" v-on="on" right>
+                                                <v-icon small
+                                                 :disabled="castToBool(todo.completed)"
+                                                @click="setPerformer(todo)">create</v-icon>
+                                            </v-avatar>
+                                        </template>
+                                        <span>Edit a todo Performer</span>
                                     </v-tooltip>
                                 </v-chip>
 
@@ -697,6 +701,16 @@ export default class Todos extends Vue {
         }
     }
 
+    nameTruncate(name: string): string {
+        if(name) {
+            if(name.length > 11) return `${name.substr(0, 11)}...`
+            else return name
+        }
+        else {
+            return ''
+        }
+    }
+
 }
 </script>
 
@@ -745,6 +759,7 @@ export default class Todos extends Vue {
 .this-list-item {
     outline-offset: -1px;
     outline: 1px solid transparent !important;
+    padding: 0px 3px;
 
     &:hover {
         outline: 1px solid #607D8B !important;

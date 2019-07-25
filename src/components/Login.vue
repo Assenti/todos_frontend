@@ -5,6 +5,7 @@
                 {{ restoreMode ? 'Password restore' : 'Sign in' }}
             </div>
         </v-layout>
+
         <v-form @submit.prevent="login">
             
             <v-alert v-model="alert"
@@ -33,6 +34,7 @@
 
             <v-layout align-center justify-space-between>
                 <v-checkbox v-model="remember"
+                    color="primary"
                     v-if="!restoreMode"
                     label="Remember me"></v-checkbox>
                 <div class="text-xs-right primary--text px-2">
@@ -42,14 +44,14 @@
 
             <v-layout class="py-3" justify-end>
                 <v-btn type="submit"
-                    v-if="!restoreMode" 
+                    v-if="!restoreMode" depressed
                     dark color="blue-grey"
                     :loading="loading">
                     Login
                     <v-icon class="ml-1" small>exit_to_app</v-icon>
                 </v-btn>
 
-                <v-btn v-if="restoreMode"
+                <v-btn v-if="restoreMode" depressed
                     :loading="loading" class="mr-2" 
                     @click.prevent="restorePassword">
                     <v-icon class="mr-1" small>arrow_back</v-icon>
@@ -58,7 +60,7 @@
 
                 <v-btn v-if="restoreMode" 
                     color="blue-grey" dark
-                    :loading="loading" 
+                    :loading="loading" depressed
                     @click.prevent="send">
                         Send
                         <v-icon class="ml-1" small>send</v-icon>
@@ -86,6 +88,7 @@ export default class Login extends Vue {
     loading: boolean = false
     restoreMode: boolean = false
     remember: boolean = false
+    checkbox1: boolean = true
 
     created() {
         bus.$on('notify', (message: string) => {
