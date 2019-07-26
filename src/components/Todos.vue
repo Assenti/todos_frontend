@@ -60,7 +60,7 @@
                 <span>Reload data</span>
             </v-tooltip>
 
-            <v-menu bottom left open-on-hover offset-y max-width="220"> 
+            <v-menu bottom left open-on-hover offset-y min-width="220"> 
                 <template v-slot:activator="{ on }">
                 <v-btn icon text small
                     class="mx-0" dark
@@ -70,15 +70,14 @@
                 </template>
 
                 <v-list dense>
-                    <v-list-item
-                        v-for="(item, i) in actions"
-                        :key="i"
-                        @click="item.action">
-                        <v-icon small class="mr-2">{{ item.icon }}</v-icon>
-                        <v-list-item-title>
-                            {{ item.title }}
-                        </v-list-item-title>
-                    </v-list-item>
+                    <template v-for="(item, i) in actions">
+                        <v-list-item
+                            :key="`action-div-${i}`"
+                            @click="item.action">
+                            <v-list-item-title v-html="item.title"/>
+                        </v-list-item>
+                        <v-divider :key="i" v-if="i < actions.length - 1"/>
+                    </template>
                 </v-list>
             </v-menu>
 
@@ -227,8 +226,7 @@
                             
                                 <v-chip color="info" small>
                                     <v-icon small class="mr-1"
-                                        :disabled="castToBool(todo.completed)"
-                                    @click="setPerformer(todo)">account_circle</v-icon>
+                                        :disabled="castToBool(todo.completed)">account_circle</v-icon>
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on }">
                                             <span :class="{'completed': todo.completed}" v-on="on">{{ nameTruncate(todoPerformer(todo)) }}</span>
@@ -330,6 +328,11 @@
             <send-email v-if="sendEmailModal" :todos="todos"/>
         </v-dialog>
 
+        <v-dialog v-model="sendWAModal"
+            max-width="400px" width="100%">
+            <send-w-a v-if="sendWAModal" :todos="todos"/>
+        </v-dialog>
+
         <v-dialog v-model="performerModal"
             max-width="400px" width="100%">
             <todo-performer v-if="performerModal" :todo="chosenTodo"/>
@@ -350,6 +353,7 @@ import EditTodo from '@/components/EditTodo.vue'
 import TodoPerformer from '@/components/TodoPerformer.vue'
 import GroupsParticipants from '@/components/GroupsParticipants.vue'
 import SendEmail from '@/components/SendEmail.vue'
+import SendWA from '@/components/SendWA.vue'
 import users from '@/store/modules/users'
 import todos from '@/store/modules/todos'
 import BackendService from '@/services/backend'
@@ -363,7 +367,8 @@ const backendService = new BackendService()
         EditTodo, 
         SendEmail, 
         TodoPerformer, 
-        GroupsParticipants
+        GroupsParticipants,
+        SendWA
     }
 })
 export default class Todos extends Vue {
@@ -386,6 +391,7 @@ export default class Todos extends Vue {
     calendarView: boolean = false
     editTodoModal: boolean = false
     sendEmailModal: boolean = false
+    sendWAModal: boolean = false
     datesDesc: boolean = true
     todosType: TodoType = { name: 'Personal' }
     todosTypes: TodoType[] = [
@@ -393,9 +399,12 @@ export default class Todos extends Vue {
     ]
     actions: object[] = [
         {
-            title: 'Send todos via Email',
-            icon: 'email',
+            title: 'Send todos via <strong>Email</strong>',
             action: this.sendViaEmail
+        },
+        {
+            title: 'Send todos via <strong>WhatsApp</strong>',
+            action: this.sendViaWA  
         }
     ]
     filters: object[] = [
@@ -472,33 +481,48 @@ export default class Todos extends Vue {
 
     get filteredTodos(): Todo[] {
         if(this.search) {
-            return this.todos.filter(todo => {
+            let todos = this.todos.filter(todo => {
                 return todo.value.toLowerCase().includes(this.search.toLowerCase())
             })
+            return this.importantAtFirst(todos)
         }
         else if(this.completedOnly) {
-            return this.todos.filter(todo => {
+            let todos = this.todos.filter(todo => {
                 return todo.completed
             })
+            return this.importantAtFirst(todos)
         }
         else if(this.importantOnly) {
-            return this.todos.filter(todo => {
+            let todos = this.todos.filter(todo => {
                 return todo.important
             })
+            return this.importantAtFirst(todos)
         }
         else if(this.datesDesc) {
-            return this.todos.sort((a: Todo, b: Todo) => {
+            let todos = this.todos.sort((a: Todo, b: Todo) => {
                 return this.getTime(b.createdAt) - this.getTime(a.createdAt)
             })
+            return this.importantAtFirst(todos)
         }
         else if(!this.datesDesc) {
-            return this.todos.sort((a: Todo, b: Todo) => {
+            let todos = this.todos.sort((a: Todo, b: Todo) => {
                 return this.getTime(a.createdAt) - this.getTime(b.createdAt)
             })
+            return this.importantAtFirst(todos)
         }
         else {
-            return this.todos
+            return this.importantAtFirst(this.todos)
         } 
+    }
+
+    private importantAtFirst(todos: Todo[]): Todo[] {
+        return this.todos.sort(this.compare)
+    }
+
+    private compare(a: Todo, b: Todo) {
+        if(a.important > b.important) return -1
+        if(a.important < b.important) return 1
+        return 0
     }
 
     private getTime(date_: string) {
@@ -690,6 +714,10 @@ export default class Todos extends Vue {
 
     sendViaEmail() {
         this.sendEmailModal = true
+    }
+
+    sendViaWA() {
+        this.sendWAModal = true
     }
 
     todoPerformer(todo: Todo) {

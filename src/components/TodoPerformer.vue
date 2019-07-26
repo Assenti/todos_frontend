@@ -1,5 +1,5 @@
 <template>
-    <v-card min-height="300">
+    <v-card min-height="200">
         <v-card-title class="blue-grey white--text">
             <v-icon left dark>person</v-icon>
             Set todo performer
@@ -44,9 +44,9 @@
 
             <v-layout>
                 <v-spacer/>
-                <v-btn color="primary" 
-                    :loading="loading"
-                    text @click="setPerformer">
+                <v-btn color="blue-grey" 
+                    :loading="loading" dark
+                    depressed @click="setPerformer">
                     Save
                     <v-icon class="ml-1" small>save</v-icon>
                 </v-btn>
@@ -66,7 +66,13 @@ import users from '@/store/modules/users'
 @Component({})
 export default class TodoPerformer extends Vue {
     search: string | null = ''
-    performer?: Performer
+    performer: Performer = {
+        id: 0,
+        firstname: '',
+        lastname: '',
+        email: '',
+        avatar: ''
+    }
     loading: boolean = false
     preloader: boolean = false
     performers: Performer[] = []
