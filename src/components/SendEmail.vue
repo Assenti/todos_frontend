@@ -26,7 +26,7 @@
                 </template>
             </v-text-field>
 
-            <div class="caption grey--text pt-1 pl-4 ml-2">{{ sendingHint }}</div>
+            <div class="caption grey--text pt-1 pl-4 ml-4">{{ sendingHint }}</div>
 
             <v-alert v-model="alert"
                 border="left" text

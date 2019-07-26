@@ -58,7 +58,7 @@
                 <div class="subheading font-weight-bold pa-2">{{ chosenTodo.value }}</div>
                 <textarea type="text"
                     ref="detailText"
-                    placeholder="Write your staff here..." 
+                    placeholder="Write your stuff here..." 
                     v-model="editorData" />
                     
             </div>

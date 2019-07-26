@@ -132,8 +132,4 @@ export default class Home extends Vue {
 .this-logo {
     width: 100px;
 }
-.this-github-logo {
-    width: 18px;
-    margin: 0 4px;
-}
 </style>

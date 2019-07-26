@@ -6,19 +6,20 @@
         </h1>
         <v-divider/>
         <v-layout align-center>
-            <div class="caption blue-grey--text text-xs-center">
-            Web application by</div>
-            <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                    <img v-on="on"
-                        src="../assets/github-logo.svg" 
-                        alt="Github" class="this-github-logo">
-                </template>
-                <span>I'm on Github</span>
-            </v-tooltip>
-            
-            <div class="caption grey--text text-xs-center">
-            <a href="https://github.com/Assenti" target="_blank">Asset Sultanov</a></div>
+            <div class="caption text-xs-center">
+            Web application by Asset Sultanov</div>
+        </v-layout>
+        <v-layout align-center justify-center class="py-4">
+            <a href="https://github.com/Assenti">
+                <img src="../assets/github-logo.svg"
+                    title="I'm in Github" 
+                    alt="Github" class="this-social-logo">
+            </a>
+            <a href="https://www.linkedin.com/in/asset-sultanov-developer/">
+                <img src="../assets/linkedin.svg" 
+                    title="I'm in LinkedIn"
+                    alt="LinkedIn" class="this-social-logo">
+            </a>
         </v-layout>
     </v-layout>
 </template>
