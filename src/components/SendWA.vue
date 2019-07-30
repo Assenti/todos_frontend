@@ -35,7 +35,9 @@
                 <v-btn color="blue-grey"
                     :disabled="!todos || todos.length == 0"
                     dark depressed>
-                    <a :href="whatsAppApi" class="this-link">Send</a>
+                    <a :href="whatsAppApi"
+                        :disabled="!todos || todos.length == 0"
+                        class="this-link">Send</a>
                     <v-icon class="ml-1" small>send</v-icon>
                 </v-btn>
             </v-layout>

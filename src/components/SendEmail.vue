@@ -86,27 +86,34 @@ export default class SendEmail extends Vue {
     }
 
     async send() {
-        try {
-            if(this.receiver) {
-                this.loading = true
-                await api.post(`api/sendViaEmail?email=${this.receiver}`, this.todos)
-                this.alert = true
-                this.message = 'Todos successfully sent'
-                this.status = 'success'
+        if(this.todos.length > 0) {
+            try {
+                if(this.receiver) {
+                    this.loading = true
+                    await api.post(`api/sendViaEmail?email=${this.receiver}`, this.todos)
+                    this.alert = true
+                    this.message = 'Todos successfully sent'
+                    this.status = 'success'
+                }
+                else {
+                    this.alert = true
+                    this.message = 'Input a list receiver'
+                    this.status = 'error'
+                }
             }
-            else {
+            catch (e) {
                 this.alert = true
-                this.message = 'Input a list receiver'
                 this.status = 'error'
+                this.message = 'Error ocurred while sending todos list'
+            }
+            finally {
+                this.loading = false
             }
         }
-        catch (e) {
+        else {
             this.alert = true
+            this.message = 'You have no todos to send'
             this.status = 'error'
-            this.message = 'Error ocurred while sending todos list'
-        }
-        finally {
-            this.loading = false
         }
     }
 }
