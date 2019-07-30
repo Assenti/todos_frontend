@@ -48,12 +48,13 @@
                         Web application by Asset Sultanov</div>
                     </v-layout>
                     <v-layout align-center justify-center class="pb-4">
-                        <a href="https://github.com/Assenti">
+                        <a href="https://github.com/Assenti" target="_blank">
                             <img src="../assets/github-logo.svg"
                                 title="I'm in Github" 
                                 alt="Github" class="this-social-logo">
                         </a>
-                        <a href="https://www.linkedin.com/in/asset-sultanov-developer/">
+                        <a href="https://www.linkedin.com/in/asset-sultanov-developer/"
+                            target="_blank">
                             <img src="../assets/linkedin.svg" 
                                 title="I'm in LinkedIn"
                                 alt="LinkedIn" class="this-social-logo">

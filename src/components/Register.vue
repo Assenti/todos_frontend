@@ -143,9 +143,16 @@ export default class Register extends Vue {
         }
         catch (e) {
             console.log(e)
-            this.alert = true
-            this.status = 'error'
-            this.message = 'Error occured while registering'
+            if(e.response.status == 400) {
+                this.alert = true
+                this.status = 'error'
+                this.message = e.response.data.msg ? e.response.data.msg : 'Invalid credentials'
+            }
+            else {
+                this.alert = true
+                this.status = 'error'
+                this.message = 'Error occured while registering'
+            }
         }
         finally {
             this.loading = false
