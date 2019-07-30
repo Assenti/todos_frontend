@@ -33,10 +33,10 @@
 
         <v-snackbar top right
             v-model="snackbar"
-            :timeout="3000">
+            :timeout="0">
             {{ notify }}
             <v-btn color="white"
-            flat @click="snackbar = false">
+                text @click="snackbar = false">
             Close
             </v-btn>
         </v-snackbar>
